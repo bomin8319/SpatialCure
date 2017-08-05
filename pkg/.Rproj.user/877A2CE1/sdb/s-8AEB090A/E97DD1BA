@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "#' @useDynLib BayesOFsurv\n#' @importFrom stats dgamma runif\n#' @import grDevices\n#' @import graphics\n#' @import RcppArmadillo\n#' @importFrom Rcpp sourceCpp\n#' @importFrom MCMCpack riwish\n#' @importFrom coda mcmc\n#' @importFrom mvtnorm rmvnorm dmvnorm\nNULL",
+    "created" : 1501815305097.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1594592830",
+    "id" : "E97DD1BA",
+    "lastKnownWriteTime" : 1501815156,
+    "last_content_update" : 1501815496553,
+    "path" : "~/Desktop/SpatialSplitPop/R/core.R",
+    "project_path" : "R/core.R",
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

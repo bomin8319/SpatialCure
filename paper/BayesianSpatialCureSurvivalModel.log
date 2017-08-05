@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  1 JUL 2017 16:22
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  5 AUG 2017 15:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -364,66 +364,34 @@ Package caption Info: rotating package is loaded.
 \sf@top=\skip62
 \sf@bottom=\skip63
 )
-(./tcilatex.tex
-TCILATEX Macros for Scientific Word 2.5 <22 Dec 95>.
-NOTICE: This macro file is NOT proprietary and may be freely copied and distrib
-uted.
-\@hour=\count122
-\@minute=\count123
-\GRAPHICSTYPE=\count124
-\draft=\count125
-\dispkind=\count126
-\c@chapter=\count127
-\theight=\dimen144
-LaTeX Info: Redefining \rm on input line 557.
-LaTeX Info: Redefining \sf on input line 558.
-LaTeX Info: Redefining \tt on input line 559.
-LaTeX Info: Redefining \bf on input line 560.
-LaTeX Info: Redefining \it on input line 561.
-LaTeX Info: Redefining \sl on input line 562.
-LaTeX Info: Redefining \sc on input line 563.
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/latexsym.sty
-Package: latexsym 1998/08/17 v2.2e Standard LaTeX package (lasy symbols)
-\symlasy=\mathgroup10
-LaTeX Font Info:    Overwriting symbol font `lasy' in version `bold'
-(Font)                  U/lasy/m/n --> U/lasy/b/n on input line 52.
-)
-\c@theorem=\count128
-\c@axiom=\count129
-\c@remark=\count130
-\c@example=\count131
-\c@exercise=\count132
-\c@definition=\count133
-\c@equationnumber=\count134
-
-amsgen already loaded) (./BayesianSpatialCureSurvivalModel.aux)
+(./BayesianSpatialCureSurvivalModel.aux)
 \openout1 = `BayesianSpatialCureSurvivalModel.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 54.
-LaTeX Font Info:    ... okay on input line 54.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 53.
+LaTeX Font Info:    ... okay on input line 53.
 
 (/usr/local/texlive/2015/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count135
-\scratchdimen=\dimen145
+\scratchcounter=\count122
+\scratchdimen=\dimen144
 \scratchbox=\box33
-\nofMPsegments=\count136
-\nofMParguments=\count137
+\nofMPsegments=\count123
+\nofMParguments=\count124
 \everyMPshowfont=\toks31
-\MPscratchCnt=\count138
-\MPscratchDim=\dimen146
-\MPnumerator=\count139
-\makeMPintoPDFobject=\count140
+\MPscratchCnt=\count125
+\MPscratchDim=\dimen145
+\MPnumerator=\count126
+\makeMPintoPDFobject=\count127
 \everyMPtoPDFconversion=\toks32
 ) (/usr/local/texlive/2015/texmf-dist/tex/generic/oberdiek/pdftexcmds.sty
 Package: pdftexcmds 2011/11/29 v0.20 Utility functions of pdfTeX for LuaTeX (HO
@@ -488,123 +456,116 @@ e
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: subfig package v1.3 is loaded.
 Package caption Info: End \AtBeginDocument code.
-LaTeX Font Info:    Try loading font information for U+msa on input line 58.
+LaTeX Font Info:    Try loading font information for U+msa on input line 57.
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 58.
+LaTeX Font Info:    Try loading font information for U+msb on input line 57.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+rsfs on input line 58.
+LaTeX Font Info:    Try loading font information for U+rsfs on input line 57.
 
 (/usr/local/texlive/2015/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
-)
-LaTeX Font Info:    Try loading font information for U+lasy on input line 58.
-
-(/usr/local/texlive/2015/texmf-dist/tex/latex/base/ulasy.fd
-File: ulasy.fd 1998/08/17 v2.2e LaTeX symbol font definitions
 ) [1
 Non-PDF special ignored!
 
 {/usr/local/texlive/2015/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-Underfull \hbox (badness 10000) in paragraph at lines 78--81
+Underfull \hbox (badness 10000) in paragraph at lines 77--80
 
  []
 
 [1
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 92--96
+Underfull \hbox (badness 10000) in paragraph at lines 91--95
 
  []
 
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 121.
 
-Underfull \hbox (badness 10000) in paragraph at lines 98--101
+(/usr/local/texlive/2015/texmf-dist/tex/latex/base/omscmr.fd
+File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <12> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 121.
 
+Overfull \hbox (34.29463pt too wide) detected at line 134
+[] []
  []
 
-LaTeX Font Info:    Font shape `U/lasy/b/n' in size <8> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 106.
-LaTeX Font Info:    Font shape `U/lasy/b/n' in size <6> not available
-(Font)              Font shape `U/lasy/m/n' tried instead on input line 106.
+
+Overfull \hbox (41.09079pt too wide) detected at line 139
+[] []
+ []
+
 [2]
-Overfull \hbox (18.64886pt too wide) detected at line 134
-[] []
- []
-
-
-Overfull \hbox (25.44502pt too wide) detected at line 139
-[] []
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 159--163
+Underfull \hbox (badness 10000) in paragraph at lines 160--164
 
  []
 
-[3] [4]
-Underfull \hbox (badness 10000) in paragraph at lines 181--187
+[3]
+Underfull \hbox (badness 10000) in paragraph at lines 191--197
 
  []
 
-[5]
-Underfull \hbox (badness 10000) in paragraph at lines 201--204
+[4] [5]
+Underfull \hbox (badness 10000) in paragraph at lines 211--214
 
  []
 
 
-Overfull \hbox (14.95226pt too wide) in paragraph at lines 207--208
-[]\T1/cmr/bx/n/12 Step 2. \T1/cmr/m/n/12 Up-date $[] \OMS/cmsy/m/n/12 ^^X []\OM
-L/cmm/m/it/12 ^^Y\OT1/cmr/m/n/12 ([]\OMS/cmsy/m/n/12 j\OT1/cmr/bx/n/12 C\OML/cm
-m/m/it/12 ; \OT1/cmr/bx/n/12 X\OML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 Z\OML/cmm/m/i
-t/12 ; \OT1/cmr/bx/n/12 t\OML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 W\OML/cmm/m/it/12 
-; []; []^^Z; [][]; \OT1/cmr/m/n/12 ^^F[])$\T1/cmr/m/n/12 , $[] \OMS/cmsy/m/n/12
- ^^X []\OML/cmm/m/it/12 ^^Y\OT1/cmr/m/n/12 ([]\OMS/cmsy/m/n/12 j\OT1/cmr/bx/n/1
-2 C\OML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 X\OML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 Z\O
-ML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 t\OML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 W\OML/cm
-m/m/it/12 ; []; []^^Z; [][]; \OT1/cmr/m/n/12 ^^F[])$\T1/cmr/m/n/12 ,
+Overfull \hbox (43.39372pt too wide) in paragraph at lines 217--218
+[]\T1/cmr/bx/n/12 Step 2. \T1/cmr/m/n/12 Up-date $\OML/cmm/m/it/12 ^^L \OMS/cms
+y/m/n/12 ^^X \OML/cmm/m/it/12 ^^Y\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 ^^L\OMS/cmsy
+/m/n/12 j\OT1/cmr/bx/n/12 C\OML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 X\OML/cmm/m/it/1
+2 ; \OT1/cmr/bx/n/12 Z\OML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 t\OML/cmm/m/it/12 ; \
+OT1/cmr/bx/n/12 W\OML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 V\OML/cmm/m/it/12 ; ^^M; ^
+^Z; ^^V[]; \OT1/cmr/m/n/12 ^^F[])$\T1/cmr/m/n/12 , $\OML/cmm/m/it/12 ^^M \OMS/c
+msy/m/n/12 ^^X \OML/cmm/m/it/12 ^^Y\OT1/cmr/m/n/12 (\OML/cmm/m/it/12 ^^M\OMS/cm
+sy/m/n/12 j\OT1/cmr/bx/n/12 C\OML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 X\OML/cmm/m/it
+/12 ; \OT1/cmr/bx/n/12 Z\OML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 t\OML/cmm/m/it/12 ;
+ \OT1/cmr/bx/n/12 W\OML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 V\OML/cmm/m/it/12 ; ^^L;
+ ^^Z; ^^V[]; \OT1/cmr/m/n/12 ^^F[])$\T1/cmr/m/n/12 ,
  []
 
-[6] [7] (./BayesianSpatialCureSurvivalModel.aux) )
-(\end occurred when \ifx on line 678 was incomplete) 
+[6] [7] (./BayesianSpatialCureSurvivalModel.aux) ) 
 Here is how much of TeX's memory you used:
- 5713 strings out of 493089
- 80478 string characters out of 6134842
- 157327 words of memory out of 5000000
- 9037 multiletter control sequences out of 15000+600000
- 24913 words of font info for 83 fonts, out of 8000000 for 9000
+ 5525 strings out of 493089
+ 78654 string characters out of 6134842
+ 153513 words of memory out of 5000000
+ 8860 multiletter control sequences out of 15000+600000
+ 24171 words of font info for 76 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 44i,12n,42p,605b,247s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2015/te
-xmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/local/texlive/2015/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2015/texmf
--dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2015/texmf-
-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2015/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2015/texmf-dis
-t/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2015/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/local/texlive/2015/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2015/texmf-dist/fo
-nts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2015/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2015/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2015/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1
-/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/p
-ublic/cm-super/sfbx1095.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/pub
-lic/cm-super/sfbx1200.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/publi
-c/cm-super/sfbx1440.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/
-cm-super/sfrm1095.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm
--super/sfrm1200.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm-s
-uper/sfrm1440.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm-sup
-er/sfrm2074.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm-super
-/sfti1200.pfb>
-Output written on BayesianSpatialCureSurvivalModel.pdf (8 pages, 251989 bytes).
+ 44i,11n,42p,670b,203s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2015/texm
+f-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/local/texlive/2015/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2015/texmf-d
+ist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/local/texlive/2015/texmf-di
+st/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2015/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2015/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2015/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2015/texmf-dist/font
+s/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2015/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2015/texmf-dist/fonts/type
+1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/pub
+lic/cm-super/sfbx1095.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/publi
+c/cm-super/sfbx1200.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/
+cm-super/sfbx1440.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm
+-super/sfrm1095.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm-s
+uper/sfrm1200.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm-sup
+er/sfrm1440.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm-super
+/sfrm2074.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm-super/s
+fti1200.pfb>
+Output written on BayesianSpatialCureSurvivalModel.pdf (8 pages, 247161 bytes).
 
 PDF statistics:
- 112 PDF objects out of 1000 (max. 8388607)
- 81 compressed objects within 1 object stream
+ 108 PDF objects out of 1000 (max. 8388607)
+ 78 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

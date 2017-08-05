@@ -1,0 +1,224 @@
+% style
+% style
+
+
+\documentclass[a4paper, 12pt]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{vmargin}
+\usepackage{multirow}
+\usepackage{natbib}
+\usepackage{tabularx}
+\usepackage{url}
+\usepackage{bm}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage{endnotes}
+\usepackage{epsfig}
+\usepackage{psfrag}
+\usepackage{amsfonts}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\usepackage{rotating}
+\usepackage{longtable}
+\usepackage{graphics}
+\usepackage{morefloats}
+\usepackage{mathrsfs}
+\usepackage{subfig}
+
+\setcounter{MaxMatrixCols}{10}
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2960}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=BibTeX}
+%TCIDATA{LastRevised=Sunday, December 11, 2016 07:02:25}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{Language=American English}
+
+\newcommand {\dsum}{\displaystyle \sum}
+\newcommand {\dprod}{\displaystyle \prod}
+\setlength{\LTcapwidth}{5in}
+\def\p3s{\phantom{xxx}}
+\setpapersize{USletter}
+\setcounter{secnumdepth}{-2}
+\makeatletter
+\renewcommand{\section}{\@startsection
+	{section}    {1}    {0mm}    {-0.7\baselineskip}    {0.08\baselineskip}    {\normalfont\large\sc\center\bf}}
+\renewcommand{\subsection}{\@startsection
+	{subsection}    {2}    {0mm}    {-0.5\baselineskip}    {0.01\baselineskip}    {\normalfont\normalsize\itshape\center}}
+\makeatother
+\setmarginsrb{1.0in}{1.0in}{1.0in}{0.40in}{0in}{0in}{0in}{0.6in}
+\input{tcilatex}
+\begin{document}
+\date{\today }
+\title{Bayesian Inference on Parametric Mixture Cure Model \\with Spatial Autocorrelation in Random Effects }
+\author{Bomin Kim}
+\maketitle
+\setstretch{1.5}
+\begin{abstract}
+	\noindent In this paper, we implement Bayesian inference on parametric mixture cure model, one of the most popular models to estimate the cure rate of treatment and the survival rate of uncured patients at the same time, with spatial autocorrelation in random effects. This includes two parametric survival models, Exponential and Weibull.
+\end{abstract}
+\clearpage \pagebreak \renewcommand{\thefigure}{\arabic{figure}} %
+\setcounter{figure}{0} \renewcommand{\thepage}{\arabic{page}} %
+\setcounter{page}{1} \pagestyle{plain} \doublespacing
+\section{Review on Parametric Mixture Cure Model}
+\subsection{Likelihood function}
+\noindent
+We consider a model for the duration $t$ which splits the sample into two groups, one of which will eventually experience the event of interest (i.e., ``fail'') and the other which will not. We define the latent
+variable $Y$ such that $Y_i$ = 1 for those who will eventually fail and $Y_i = 0$ for those who will not; define $Pr(Y_i
+= 1) = \delta_i$ such that the probability $\delta_i$ is modeled as a logit by including explanatory variables:
+\begin{equation}
+\delta_i =\frac{\exp ({Z}_i{\gamma} )}{1+\exp ({Z}_i{\gamma})}.
+\end{equation}
+The likelihood function derived by Box-Steffensmeier and Zorn (1999) is:
+\begin{equation}
+L=\dprod\limits_{i=1}^{N}[\delta _{i}g(t_i|{X}_i,{\beta})]^{C_i}[1-\delta _{i}+\delta_i G(t_{i}|{X}_i,{\beta})]^{1-C_{i}},
+\end{equation}
+where $g(t_i|{X}_i,{\beta}) = f(t_i*Y_i=1|{X}_i,{\beta})$ and $G(t_i|{X}_i,{\beta}) = S(t_i*Y_i=1|{X}_i,\beta)$. Here, we follow the common definition in survival model liturate such that $f(t_i|{X}_i,{\beta})$ is the density function and $S(t_i|{X}_i,{\beta}) = Pr(T_i> t_i|{X}_i,{\beta})$, with ${\beta}$ and ${\gamma}$ are the parameter vectors to be estimated.\\ \newline
+\noindent Then the corresponding log-likelihood function is%
+\begin{equation}
+\ln L=\dsum\limits_{i=1}^{N}C_i [\ln\delta _{i}+\ln g(t_i|{X}_i,{\beta})]+(1-C_i)\ln[1-\delta _{i}+\delta_i G(t_{i}|{X}_i,{\beta} )].
+\end{equation}
+We will expand this mixture cure model to be the spatial-cure model, by incorporating spatial autocorrelation as a random effect.
+\section{Derivation of Parametric Spatial Mixture Cure Model}
+\noindent Inclulding a random effect or ``frailty'' term, we define the proportional hazards $h(t_i |{X}_i,{\beta})$ as:
+\begin{equation}
+\begin{aligned}
+h(t_i |{X}_i, \beta) &= h_0(t_i)\omega_i\exp(X_i \beta)\\
+& = h_0(t_i)\exp(X_i \beta+W_i),
+\end{aligned}
+\end{equation}
+where $h_0(t_i)$ is the baseline hazard and $W_i \equiv \ln \omega_i$ is the individual frailty term, designed to capture differences among the individuals.
+\\ \newline
+\noindent For cure model, we can also add the random effect term to $\Pr(Y_i=1)$ such that  
+\begin{equation}
+\delta_i =\frac{\exp ({Z}_i{\gamma} + W_i)}{1+\exp ({Z}_i{\gamma}+W_i)}.
+\end{equation}
+\textcolor{red}{Should we use shared random effect $W_i$? or define different random effect $V_i$? (as we did for $\gamma$)}  \\ \newline
+Then, we can define the likelihood functions for Exponential and Weibull models:
+\begin{itemize}
+	\item [1.] Exponential
+	\begin{equation}
+	\begin{aligned}
+	f(t_i|X_i, {\beta}, W_i) &= \mbox{exp}(X_i{\beta}+ W_i)\mbox{exp}(- \mbox{exp}(X_i{\beta}+ W_i)t_i),\\
+	S(t_i|X_i, {\beta},  W_i) &= \mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta}+ W_i)t_i),
+	\end{aligned}
+	\end{equation}
+which establish the likelihood and log-likelihood function respectively as
+	\begin{equation}
+	\begin{aligned}
+	L({\beta}, {\gamma}, \mathbf{W})=&\dprod\limits_{i=1}^{N}[\delta _{i}\mbox{exp}(X_i{\beta}+ W_i)\mbox{exp}(- \mbox{exp}(X_i{\beta}+ W_i)t_i)]^{C_i}\\
+	&\times [1-\delta _{i}+\delta_i  \mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta}+ W_i)t_i)]^{1-C_{i}},
+	\end{aligned}
+	\end{equation}
+		\begin{equation}
+		\begin{aligned}
+		\ln L({\beta}, {\gamma}, \mathbf{W})=&\dsum\limits_{i=1}^{N}C_i [\ln\delta _{i}+(X_i{\beta}+ W_i)- \mbox{exp}(X_i{\beta}+ W_i)t_i]\\&+(1-C_i)\ln[1-\delta _{i}+\delta_i  \mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta}+ W_i)t_i)].		
+		\end{aligned}
+		\end{equation}
+	\item [2.] Weibull
+	\begin{equation}
+	\begin{aligned}
+f(t_i|\rho, X_i, {\beta}, W_i) &= \rho(\mbox{exp}(X_i{\beta}+W_i)) (\mbox{exp}(X_i{\beta}+W_i)t_i)^{\rho - 1} \mbox{exp}(-(\mbox{exp}(X_i{\beta}+W_i)t_i)^{\rho})\\
+S(t_i|\rho, X_i, {\beta}, W_i) &= \mbox{exp}(-(\mbox{exp}(X_i{\beta}+W_i)t_i)^{\rho}),
+	\end{aligned}
+	\end{equation}
+	which establish the likelihood and log-likelihood function respectively as
+	\begin{equation}
+	\begin{aligned}
+	L(\rho, {\beta}, {\gamma}, \mathbf{W})=&\dprod\limits_{i=1}^{N}[\delta _{i}\rho(\mbox{exp}(X_i{\beta}+W_i)) (\mbox{exp}(X_i{\beta}+W_i)t_i)^{\rho - 1} \mbox{exp}(-(\mbox{exp}(X_i{\beta}+W_i)t_i)^{\rho})]^{C_i}\\
+	&\times [1-\delta _{i}+\delta_i \mbox{exp}(-(\mbox{exp}(X_i{\beta}+W_i)t_i)^{\rho})]^{1-C_{i}},
+	\end{aligned}
+	\end{equation}
+	\begin{equation}
+	\begin{aligned}
+	\ln L(\rho, {\beta}, {\gamma}, \mathbf{W})=&\dsum\limits_{i=1}^{N}C_i [\ln\delta _{i}+ \ln\rho+(X_i{\beta}+ W_i) + (\rho-1)(X_i{\beta}+ W_i+ \ln t_i)\\&- \rho\mbox{exp}(X_i{\beta}+ W_i)t_i]+(1-C_i)\ln[1-\delta _{i}+\delta_i \mbox{exp}(-(\mbox{exp}(X_i{\beta}+W_i)t_i)^{\rho})].		
+	\end{aligned}
+	\end{equation}
+\end{itemize}
+For Bayesian inference, we use simplest specifications for the priors, for example,:
+\begin{equation}
+\begin{aligned}
+{\beta} &\sim \mbox{Multivariate Normal}_{p_1}(\mathbf{\mu}_{\beta}, \Sigma_{\beta}),\\
+{\gamma} &\sim \mbox{Multivariate Normal}_{p_2}(\mathbf{\mu}_{\gamma}, \Sigma_{\gamma}),\\
+\rho&\sim \mbox{Gamma}(a_{\rho}, b_{\rho}) \mbox{ for Weibull}.
+\end{aligned}
+\end{equation}
+For the hyperparameters, we can follow the common approach and use
+\begin{equation}
+\begin{aligned}
+&\mathbf{\mu}_{\beta} = \mathbf{0}, \Sigma_{\beta} \sim \mbox{Inverse-Wishart}(p_1\mathbf{I}_{p_1}, p_1),\\
+& \mathbf{\mu}_{\gamma} = \mathbf{0}, \Sigma_{\gamma} \sim \mbox{Inverse-Wishart}(p_2\mathbf{I}_{p_2}, p_2), \\
+& (a_{\rho}, b_{\rho}) = (0.001, 1/0.001)= (0.001, 1000),
+\end{aligned}
+\end{equation}
+where we use hierarchical Bayesian modeling to esitmate $\Sigma_{\beta}$ and $\Sigma_{\gamma}$ using Inverse-Wishart distribution. Note that if this step seems to be unnecessary, we can instead simply fix those such as $\Sigma_{\beta} =\Sigma_{\gamma} = 10^4\times\mathbf{I}$ (very slow mixing). 
+\section{Spatial Modeling with Conditionally Autoregressive (CAR) model}
+\noindent Now, we need to define the priors for the random effect $\mathbf{W}=\{W_1,...,W_N\}$ to assign spatial correlation across the individuals. We follow the canonical approach and apply conditionally autoregressive (CAR) model, one of the most widely used model in spatial statistics.\\ \newline
+To employ spatial process modeling for the geographic locations, we define our random effect to be naturally associated with
+areal units. As such we work exclusively with CAR models for these effects, i.e., we assume
+that
+\begin{equation}
+\mathbf{W}|\lambda \sim \mbox{CAR}(\lambda),
+\end{equation}
+where $\lambda$ refers to the precision of the random effects distribution of the random effects distribution. By allowing this parameter, we can avoid the exchageable prior and reflect a conditionally autoregressive prior that incorporates neighbor definitions via the spatial weights matrix.
+\begin{itemize}
+	\item [1.] Individual frailty model\\
+	Similarly as non-spatial friailty (or random effect) models, this model assumes that the individual unit $i$ has spatial-related random effect, $W_i$. The conditional distribution of the spatial random effects that results from individual frailty model CAR prior is then:
+\begin{equation}
+W_i|W_{i^\prime \neq i} \sim N(\overline{W_i}, 1/(\lambda m_i)),
+\end{equation}
+where $\overline{W_i}$ is the average of the $W_{i^\prime \neq i}$ neighboring $W_i$ (i.e. $\overline{W_i}=m_i^{-1}\sum_{j \mbox{ adj } i}W_j$), and $m_i$ is the number of adjacencies. By incorporating the spatial locations of units, the CAR prior thus produces a conditional
+distribution for the random effects that is normally distributed with a conditional mean
+equal to the average of the random effects for neighbors of $i$, and a conditional variance that
+is inversely proportional to the number of units neighboring $i$ (Thomas et al. 2004).
+	\item [2.] Shared frailty model\\
+	This model assumes that the individual unit $i$ is now nested in a higher-level cluster or stratum	$j$, and the random effect refers to this higher-level stratum, $W_j$. The resulting conditional distribution for the strata-level spatial random effects is then:
+	\begin{equation}
+	W_j|W_{j^\prime \neq j} \sim N(\overline{W_j}, 1/(\lambda m_j)),
+	\end{equation}
+	where $\overline{W_j}$ is the average of the $W_{j^\prime \neq j}$ neighboring $W_j$ (i.e. $\overline{W_j}=m_j^{-1}\sum_{k \mbox{ adj } j}W_k$), and $m_j$ is the number of adjacencies. Analogous to the individual frailty case, the CAR prior thus produces a conditional distribution
+for the spatial shared frailties that is normally distributed with a conditional mean
+equal to the average of the random effects for strata neighboring stratum $j$, and a conditional
+variance that is inversely proportional to the number of strata neighboring $j$ (Thomas et al.
+2004).\\
+\end{itemize} 
+The individual and shared spatial frailty models also require that a hyperprior, $p(\lambda)$,
+be assigned to $\lambda$. Generally, Gamma hyperprior is chosen (Banerjee, Carlin, and
+Gelfand 2004) as
+\begin{equation}
+\lambda \sim \mbox{Gamma} (a_{\lambda}, b_{\lambda}),
+\end{equation} where we can specify vague prior $(a_{\lambda}, b_{\lambda}) = (0.001, 1/0.001) = (0.001, 1000)$ as we did for $\rho$. Moreover, to identify an intercept, we may impose the constraint that the frailties sum to zero, i.e. $\sum_i W_i = 0$.
+\newpage
+\section{Inference}
+\noindent Now, the joint posterior distribution for the Bayesian parametric (Weibull, but reduces to Exponential with $\rho = 1$) spatial mixture cure model model is:
+\begin{equation}
+\begin{aligned}
+&\pi({\beta}, \gamma, \rho, \mathbf{W}, \lambda, \Sigma_{\beta}, \Sigma_{\gamma}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}) \\&\propto L({\beta}, \gamma, \rho, \mathbf{W}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t})\pi(\mathbf{W}|\lambda)  \pi({\beta}|\mathbf{\mu}_{\beta}, \Sigma_{\beta}) \pi({\gamma}|\mathbf{\mu}_{\gamma}, \Sigma_{\gamma})  \pi(\rho)\pi(\lambda) \pi(\Sigma_{\beta})  \pi(\Sigma_{\gamma}),
+\end{aligned}
+\end{equation}
+where $L({\beta}, \gamma, \rho, \mathbf{W}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t})$ is Equation (10), $\pi(\mathbf{W}|\lambda)$ is either Equation (15) or Equation (16) based on the choice of individual or shared frailty model, $\pi({\beta}|\mathbf{\mu}_{\beta}, \Sigma_{\beta})$ and  $\pi({\gamma}|\mathbf{\mu}_{\gamma}, \Sigma_{\gamma})$ comes from Equation (12), $\pi(\rho)$ and $\pi(\lambda)$ are Gamma hyperpriors in Equation (12) and Equation (17), and $\pi(\Sigma_{\beta})$ and $\pi(\Sigma_{\gamma})$ are from Equation (13).\\ \newline
+For Bayesian inference, we will implement Markov Chain Monte Carlo (MCMC) algorithm with the following update scheme:
+\begin{itemize}
+	\item[] {\textbf{Step 0.}} Choose an arbitrary starting point ${\beta}_0, {\gamma}_0$, $\rho_0$ if Weibull, $\lambda_0$, and corresponding $\mathbf{W}_0=\{W_1,...,W_N\}$ from the prior given $\lambda_0$; then set $i = 0$.
+	\item[] {\textbf{Step 1.}} Update $\Sigma_{\beta} \sim \pi(\Sigma_{\beta}|{\beta})$, $\Sigma_{\gamma} \sim \pi(\Sigma_{\gamma}|{\gamma})$, and $\lambda \sim \pi(\lambda|\mathbf{W})$ using Gibbs sampler.
+	\item[] {\textbf{Step 2.}} Update ${\beta}\sim \pi({\beta}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{W}, {\gamma}, \rho, \mathbf{\mu}_{\beta}, \Sigma_{\beta})$, ${\gamma}\sim \pi({\gamma}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{W}, {\beta},\rho, \mathbf{\mu}_{\gamma}, \Sigma_{\gamma})$, and $\mathbf{W}\sim \pi(\mathbf{W}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, {\beta}, \gamma, \rho, \lambda)$ using slice sampling. 
+	\item[] {\textbf{Step $\mathbf{2}^\prime$.}} If Weibull, update $\rho \sim \pi(\rho|\mathbf{C}, \mathbf{\alpha}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{W}, {\beta}, {\gamma}, a_{\lambda}, b_{\lambda})$  using slice sampling.
+	\item[] {\textbf{Step 3.}} Set $i = i + 1$, and go to Step 1.
+	\item[] {\textbf{Step 4.}} After $N$ iterations, summarize the parameter estimates using all sampled values (e.g. confidence intervals for posterior estimates)
+\end{itemize}
+\section{Appendix}
+\noindent While we already derived $\pi(\Sigma_{\beta}|\mathbf{\beta}_i)$ and $\pi(\Sigma_{\gamma}|\mathbf{\gamma}_i)$ (See BayesianZombieSurvivalModel draft), the closed form of full conditional distributions of $\lambda \sim \pi(\lambda|\mathbf{W})$ in Step 1 are derived as below:
+	\begin{equation*}
+	\begin{aligned}
+\pi(\lambda|\mathbf{W})	&\propto\pi(\mathbf{W}|\lambda)\times \pi(\lambda) \\
+	&\propto \Big(\prod_{i=1}^N \pi(W_i|\lambda)\Big) \times \pi(\lambda)\\
+	& \propto \Big(\prod_{i=1}^N N(\overline{W_i}, 1/(\lambda m_i))\Big) \times \mbox{Gamma}(a_{\lambda}, b_{\lambda})\\
+	& \propto \lambda^{\frac{N}{2}} \mbox{exp}\{-\frac{\lambda m_i}{2}\sum_{i=1}^N (W_i - \overline{W_i})^2\} \times \lambda^{a_{\lambda}-1}\mbox{exp}\{-b_{\lambda}\lambda\}\\
+	& \propto \lambda^{\frac{N}{2} + a_{\lambda}-1}\mbox{exp}\{-(\frac{ m_i}{2}\sum_{i=1}^N (W_i - \overline{W_i})^2 +b_{\lambda})\lambda\} \\
+	&\sim \mbox{Gamma}(\frac{N}{2} + a_{\lambda},\quad \frac{ m_i}{2}\sum_{i=1}^N (W_i - \overline{W_i})^2 +b_{\lambda})	
+	\end{aligned}
+	\end{equation*} 
+ \end{document}

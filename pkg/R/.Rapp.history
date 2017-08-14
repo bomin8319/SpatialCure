@@ -1,11 +1,239 @@
 library(devtools)
 document()
-document()
 check()
-document()
-document()
 document()
 check()
 document()
 check()
 install()
+library(devtools)
+document()
+check()
+X = sample(1:10, 1000, TRUE)
+X
+Z = X
+X = sample(1:100, 1000, TRUE)
+p1 = dim(X)[2]#
+  p2 = dim(Z)[2]#
+  # initial values#
+  betas = rep(0, p1)#
+  gammas = rep(0, p2)#
+  rho = 1#
+  lambda = 1#
+  W = rep(0, length(Y))#
+  V = rep(0, length(Y))#
+  delta = 1 / (1 + exp(-Z %*% gammas + V))#
+  Sigma.b = 10 * p1 * diag(p1)#
+  Sigma.g = 10 * p2 * diag(p2)#
+  betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)#
+  gammas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p2)#
+  rho.samp = rep(NA, (N - burn) / thin)
+N = 1000
+p1 = dim(X)[2]#
+  p2 = dim(Z)[2]#
+  # initial values#
+  betas = rep(0, p1)#
+  gammas = rep(0, p2)#
+  rho = 1#
+  lambda = 1#
+  W = rep(0, length(Y))#
+  V = rep(0, length(Y))#
+  delta = 1 / (1 + exp(-Z %*% gammas + V))#
+  Sigma.b = 10 * p1 * diag(p1)#
+  Sigma.g = 10 * p2 * diag(p2)#
+  betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)#
+  gammas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p2)#
+  rho.samp = rep(NA, (N - burn) / thin)
+burn = 0
+p1 = dim(X)[2]#
+  p2 = dim(Z)[2]#
+  # initial values#
+  betas = rep(0, p1)#
+  gammas = rep(0, p2)#
+  rho = 1#
+  lambda = 1#
+  W = rep(0, length(Y))#
+  V = rep(0, length(Y))#
+  delta = 1 / (1 + exp(-Z %*% gammas + V))#
+  Sigma.b = 10 * p1 * diag(p1)#
+  Sigma.g = 10 * p2 * diag(p2)#
+  betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)#
+  gammas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p2)#
+  rho.samp = rep(NA, (N - burn) / thin)
+thin = 1
+p1 = dim(X)[2]#
+  p2 = dim(Z)[2]#
+  # initial values#
+  betas = rep(0, p1)#
+  gammas = rep(0, p2)#
+  rho = 1#
+  lambda = 1#
+  W = rep(0, length(Y))#
+  V = rep(0, length(Y))#
+  delta = 1 / (1 + exp(-Z %*% gammas + V))#
+  Sigma.b = 10 * p1 * diag(p1)#
+  Sigma.g = 10 * p2 * diag(p2)#
+  betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)#
+  gammas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p2)#
+  rho.samp = rep(NA, (N - burn) / thin)
+p1 = dim(X)[2]#
+  p2 = dim(Z)[2]#
+  # initial values
+betas = rep(0, p1)#
+  gammas = rep(0, p2)#
+  rho = 1#
+  lambda = 1#
+  W = rep(0, length(Y))#
+  V = rep(0, length(Y))
+Y
+X = sample(1:10, 1000, TRUE)
+Z = X
+Y = sample(1:100, 1000, TRUE)
+Y
+betas = rep(0, p1)#
+  gammas = rep(0, p2)#
+  rho = 1#
+  lambda = 1#
+  W = rep(0, length(Y))#
+  V = rep(0, length(Y))
+p1 = dim(X)[2]#
+  p2 = dim(Z)[2]#
+  # initial values#
+  betas = rep(0, p1)#
+  gammas = rep(0, p2)#
+  rho = 1#
+  lambda = 1#
+  W = rep(0, length(Y))#
+  V = rep(0, length(Y))
+p1
+X = rbind(rep(1, 1000), X)
+X
+X = t(X)
+X
+Z = X
+p1 = dim(X)[2]#
+  p2 = dim(Z)[2]#
+  # initial values#
+  betas = rep(0, p1)#
+  gammas = rep(0, p2)#
+  rho = 1#
+  lambda = 1#
+  W = rep(0, length(Y))#
+  V = rep(0, length(Y))
+delta = 1 / (1 + exp(-Z %*% gammas + V))#
+  Sigma.b = 10 * p1 * diag(p1)#
+  Sigma.g = 10 * p2 * diag(p2)#
+  betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)#
+  gammas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p2)#
+  rho.samp = rep(NA, (N - burn) / thin)#
+  lambda.samp = rep(NA, (N - burn) / thin)#
+  W.samp = matrix(NA, nrow = (N - burn) / thin, ncol = length(Y))#
+  V.samp = matrix(NA, nrow = (N - burn) / thin, ncol = length(Y))
+delta
+iter
+iter = 1
+Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
+library(MCMCpack)
+Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
+Sigma.b
+Sigma.g = riwish(1 + p2, gammas %*% t(gammas) + p2 * diag(p2))
+Sigma.g
+lambda = lambda.gibbs.sampling(S, A, W, V)
+S = sample(1:5, 1000, TRUE)
+A
+S
+A = matrix(1, 1000, 1000)
+A
+diag(A) = 0
+lambda = lambda.gibbs.sampling(S, A, W, V)
+lambda
+which(A[i,]==1)
+lambda.gibbs.sampling <- function(S, A, W, V, a = 1, b = 1) {#
+  Ns = length(S)#
+  sums = 0#
+  for (i in 1:Ns) {#
+    adj = S %in% which(A[i,]==1)#
+    m_i = sum(adj)#
+    W_i_bar = mean(W[adj])#
+    V_i_bar = mean(V[adj])#
+    sums = sums + m_i/2 * ((W[i]-W_i_bar)^2 + (V[i]-V_i_bar)^2)#
+  }#
+  lambda = rgamma(1, Ns + a, sums + b)#
+  return(lambda)#
+}
+lambda = lambda.gibbs.sampling(S, A, W, V)
+lambda
+S %in% which(A[i,]==1)
+i = 10
+S %in% which(A[i,]==1)
+which(A[i,]==1)
+S %in% which(A[i,]==1)
+adj = S %in% which(A[i,]==1)#
+    m_i = sum(adj)
+m_i
+adj = which(A[i,]==1)
+adj
+m_i = length(adj)
+m_i
+mean(W[adj])
+mean(V[adj])
+m_i/2 * ((W[i]-W_i_bar)^2 + (V[i]-V_i_bar)^2)
+W_i_bar = mean(W[adj])#
+    V_i_bar = mean(V[adj])
+m_i/2 * ((W[i]-W_i_bar)^2 + (V[i]-V_i_bar)^2)
+Ns = length(S)#
+  sums = 0#
+  for (i in 1:Ns) {#
+    adj = which(A[i,]==1)#
+    m_i = length(adj)#
+    W_i_bar = mean(W[adj])#
+    V_i_bar = mean(V[adj])#
+    sums = sums + m_i/2 * ((W[i]-W_i_bar)^2 + (V[i]-V_i_bar)^2)#
+  }
+sums
+rgamma(1, Ns + a, sums + b)
+lambda = lambda.gibbs.sampling(S, A, W, V)
+lambda
+W = W.slice.sampling(S, A, lambda, Y, X, W, betas, delta, C, rho, w[1], m, form = form)
+betas = betas.slice.sampling(Sigma.b, Y, X, W, betas, delta, C, rho, w[1], m, form = form)
+eXB = exp(X %*% betas + W)
+eXB
+document()
+check()
+document()
+check()
+document()
+check()
+document()
+check()
+document()
+check()
+rgamma
+?rgamma
+document()
+check()
+document()
+check()
+document()
+check()
+?dnorm
+document9
+documnet()
+document()
+check()
+A
+document()
+check()
+document()
+document()
+document()
+check()
+document()
+document()
+check()
+document()
+document()
+check()
+install()
+mcmcSpatialCure
+?mcmcSpatialCure

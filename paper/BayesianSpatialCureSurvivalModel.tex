@@ -226,9 +226,9 @@ For Bayesian inference, we will implement Markov Chain Monte Carlo (MCMC) algori
 \pi(\lambda|\mathbf{W}, \mathbf{V})	&\propto\pi(\mathbf{W}|\lambda)\times \pi(\mathbf{V}|\lambda)\times \pi(\lambda) \\
 	&\propto \Big(\prod_{i=1}^N \pi(W_i|\lambda)\Big) \times\Big(\prod_{i=1}^N \pi(V_i|\lambda)\Big) \times \pi(\lambda)\\
 	& \propto \Big(\prod_{i=1}^N N(\overline{W_i}, 1/(\lambda m_i)) \times N(\overline{V_i}, 1/(\lambda m_i)) \Big) \times \mbox{Gamma}(a_{\lambda}, b_{\lambda})\\
-	& \propto \lambda^{\frac{N}{2}} \lambda^{\frac{N}{2}} \mbox{exp}\{-\frac{\lambda m_i}{2}\sum_{i=1}^N (W_i - \overline{W_i})^2 + (V_i - \overline{V_i})^2\} \times \lambda^{a_{\lambda}-1}\mbox{exp}\{-b_{\lambda}\lambda\}\\
-	& \propto \lambda^{{N} + a_{\lambda}-1}\mbox{exp}\{-(\frac{ m_i}{2}\sum_{i=1}^N (W_i - \overline{W_i})^2 + (V_i - \overline{V_i})^2+b_{\lambda})\lambda\} \\
-	&\sim \mbox{Gamma}(N + a_{\lambda},\quad \frac{ m_i}{2}\sum_{i=1}^N (W_i - \overline{W_i})^2+ (V_i - \overline{V_i})^2 +b_{\lambda})	
+	& \propto \lambda^{\frac{N}{2}} \lambda^{\frac{N}{2}} \mbox{exp}\{-\sum_{i=1}^N \frac{\lambda m_i}{2}\Big((W_i - \overline{W_i})^2 + (V_i - \overline{V_i})^2\Big)\} \times \lambda^{a_{\lambda}-1}\mbox{exp}\{-b_{\lambda}\lambda\}\\
+	& \propto \lambda^{{N} + a_{\lambda}-1}\mbox{exp}\{-(\sum_{i=1}^N \frac{ m_i}{2}\Big((W_i - \overline{W_i})^2 + (V_i - \overline{V_i})^2\Big)+b_{\lambda})\lambda\} \\
+	&\sim \mbox{Gamma}(N + a_{\lambda},\quad \sum_{i=1}^N \frac{ m_i}{2}\Big((W_i - \overline{W_i})^2+ (V_i - \overline{V_i})^2 \Big)+b_{\lambda})	
 	\end{aligned}
 	\end{equation*} 
  \end{document}

@@ -4,7 +4,7 @@
 \alias{betas.post}
 \title{betas.post}
 \usage{
-betas.post(betas.p, p, Sigma.b, Y, X, betas, alpha, C, lambda, form)
+betas.post(betas.p, p, Sigma.b, Y, X, W, betas, delta, C, rho, form)
 }
 \arguments{
 \item{betas.p}{current value of the pth element of betas}
@@ -17,13 +17,15 @@ betas.post(betas.p, p, Sigma.b, Y, X, betas, alpha, C, lambda, form)
 
 \item{X}{covariates for betas}
 
+\item{W}{spatial random effects}
+
 \item{betas}{current value of betas}
 
-\item{alpha}{probability of true censoring}
+\item{delta}{probability of true censoring}
 
 \item{C}{censoring indicator}
 
-\item{lambda}{current value of lambda}
+\item{rho}{current value of rho}
 
 \item{form}{type of parametric model (Exponential or Weibull)}
 }

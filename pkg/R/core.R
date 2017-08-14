@@ -1,5 +1,5 @@
 #' @useDynLib SpatialCure
-#' @importFrom stats dgamma runif
+#' @importFrom stats dgamma runif rgamma dnorm
 #' @import grDevices
 #' @import graphics
 #' @import RcppArmadillo
@@ -16,10 +16,11 @@ NULL
 #' @param Sigma.b variance estimate of betas
 #' @param Y response variable
 #' @param X covariates for betas
+#' @param W spatial random effects
 #' @param betas current value of betas
-#' @param alpha probability of true censoring
+#' @param delta probability of true censoring
 #' @param C censoring indicator
-#' @param lambda current value of lambda
+#' @param rho current value of rho
 #' @param w size of the slice in the slice sampling
 #' @param m limit on steps in the slice sampling
 #' @param form type of parametric model (Exponential or Weibull)
@@ -27,10 +28,10 @@ NULL
 #' @return One sample update using slice sampling
 #'
 #' @export
-betas.slice.sampling = function(Sigma.b, Y, X, betas, alpha, C, lambda, w, m, form) {
+betas.slice.sampling = function(Sigma.b, Y, X, W, betas, delta, C, rho, w, m, form) {
   p1 = length(betas)
   for (p in sample(1:p1, p1, replace = FALSE)) {
-    betas[p] = univ.betas.slice.sampling(betas[p], p, Sigma.b, Y, X, betas, alpha, C, lambda, w, m, form = form)
+    betas[p] = univ.betas.slice.sampling(betas[p], p, Sigma.b, Y, X, W, betas, delta, C, rho, w, m, form = form)
   }
   return(betas)
 }
@@ -43,10 +44,11 @@ betas.slice.sampling = function(Sigma.b, Y, X, betas, alpha, C, lambda, w, m, fo
 #' @param Sigma.b variance estimate of betas
 #' @param Y response variable
 #' @param X covariates for betas
+#' @param W spatial random effects
 #' @param betas current value of betas
-#' @param alpha probability of true censoring
+#' @param delta probability of true censoring
 #' @param C censoring indicator
-#' @param lambda current value of lambda
+#' @param rho current value of rho
 #' @param w size of the slice in the slice sampling
 #' @param m limit on steps in the slice sampling
 #' @param lower lower bound on support of the distribution
@@ -56,9 +58,9 @@ betas.slice.sampling = function(Sigma.b, Y, X, betas, alpha, C, lambda, w, m, fo
 #' @return One sample update using slice sampling
 #'
 #' @export
-univ.betas.slice.sampling = function(betas.p, p, Sigma.b, Y, X, betas, alpha, C, lambda, w, m, lower = -Inf, upper = +Inf, form) {
+univ.betas.slice.sampling = function(betas.p, p, Sigma.b, Y, X, W, betas, delta, C, rho, w, m, lower = -Inf, upper = +Inf, form) {
   b0 = betas.p
-  b.post0 = betas.post(b0, p, Sigma.b, Y, X, betas, alpha, C, lambda, form)
+  b.post0 = betas.post(b0, p, Sigma.b, Y, X, W, betas, delta, C, rho, form)
   
   u = runif(1, 0, w)
   L = b0 - u
@@ -66,13 +68,13 @@ univ.betas.slice.sampling = function(betas.p, p, Sigma.b, Y, X, betas, alpha, C,
   if (is.infinite(m)) {
     repeat
     { if (L <= lower) break
-      if (betas.post(L, p, Sigma.b, Y, X, betas, alpha, C, lambda, form) <= b.post0) break
+      if (betas.post(L, p, Sigma.b, Y, X, W, betas, delta, C, rho, form) <= b.post0) break
       L = L - w
     }
     repeat
     {
       if (R >= upper) break
-      if (betas.post(R, p, Sigma.b, Y, X, betas, alpha, C, lambda, form) <= b.post0) break
+      if (betas.post(R, p, Sigma.b, Y, X, W, betas, delta, C, rho, form) <= b.post0) break
       R = R + w
     }
   } else if (m > 1) {
@@ -81,14 +83,14 @@ univ.betas.slice.sampling = function(betas.p, p, Sigma.b, Y, X, betas, alpha, C,
     
     while (J > 0) {
       if (L <= lower) break
-      if (betas.post(L, p, Sigma.b, Y, X, betas, alpha, C, lambda, form) <= b.post0) break
+      if (betas.post(L, p, Sigma.b, Y, X, W, betas, delta, C, rho, form) <= b.post0) break
       L = L - w
       J = J - 1
     }
     
     while (K > 0) {
       if (R >= upper) break
-      if (betas.post(R, p, Sigma.b, Y, X, betas, alpha, C, lambda, form) <= b.post0) break
+      if (betas.post(R, p, Sigma.b, Y, X, W, betas, delta, C, rho, form) <= b.post0) break
       R = R + w
       K = K - 1
     }
@@ -104,7 +106,7 @@ univ.betas.slice.sampling = function(betas.p, p, Sigma.b, Y, X, betas, alpha, C,
   repeat
   {
     b1 = runif(1, L, R)
-    b.post1 = betas.post(b1, p, Sigma.b, Y, X, betas, alpha, C, lambda, form)
+    b.post1 = betas.post(b1, p, Sigma.b, Y, X, W, betas, delta, C, rho, form)
     
     if (b.post1 >= b.post0) break
     if (b1 > b0) {
@@ -123,9 +125,10 @@ univ.betas.slice.sampling = function(betas.p, p, Sigma.b, Y, X, betas, alpha, C,
 #' @param Y response variable
 #' @param eXB exponentiated vector of covariates times betas
 #' @param Z covariates for gammas
+#' @param V spatial random effects
 #' @param gammas current value of gammas
 #' @param C censoring indicator
-#' @param lambda current value of lambda
+#' @param rho current value of rho
 #' @param w size of the slice in the slice sampling
 #' @param m limit on steps in the slice sampling
 #' @param form type of parametric model (Exponential or Weibull)
@@ -133,10 +136,10 @@ univ.betas.slice.sampling = function(betas.p, p, Sigma.b, Y, X, betas, alpha, C,
 #' @return One sample update using slice sampling
 #'
 #' @export
-gammas.slice.sampling = function(Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m, form) {
+gammas.slice.sampling = function(Sigma.g, Y, eXB, Z, V, gammas, C, rho, w, m, form) {
   p2 = length(gammas)
   for (p in sample(1:p2, p2, replace = FALSE)) {
-    gammas[p] = univ.gammas.slice.sampling(gammas[p], p, Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m, form = form)
+    gammas[p] = univ.gammas.slice.sampling(gammas[p], p, Sigma.g, Y, eXB, Z, V, gammas, C, rho, w, m, form = form)
   }
   return(gammas)
 }
@@ -150,9 +153,10 @@ gammas.slice.sampling = function(Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m, fo
 #' @param Y response variable
 #' @param eXB exponentiated vector of covariates times betas
 #' @param Z covariates for gammas
+#' @param V spatial random effects
 #' @param gammas current value of gammas
 #' @param C censoring indicator
-#' @param lambda current value of lambda
+#' @param rho current value of rho
 #' @param w size of the slice in the slice sampling
 #' @param m limit on steps in the slice sampling
 #' @param lower lower bound on support of the distribution
@@ -162,9 +166,9 @@ gammas.slice.sampling = function(Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m, fo
 #' @return One sample update using slice sampling
 #'
 #' @export
-univ.gammas.slice.sampling = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m, lower = -Inf, upper = +Inf, form) {
+univ.gammas.slice.sampling = function(gammas.p, p, Sigma.g, Y, eXB, Z, V, gammas, C, rho, w, m, lower = -Inf, upper = +Inf, form) {
   g0 = gammas.p
-  g.post0 = gammas.post(g0, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form)
+  g.post0 = gammas.post(g0, p, Sigma.g, Y, eXB, Z, V, gammas, C, rho, form)
   
   u = runif(1, 0, w)
   L = g0 - u
@@ -172,13 +176,13 @@ univ.gammas.slice.sampling = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C
   if (is.infinite(m)) {
     repeat
     { if (L <= lower) break
-      if (gammas.post(L, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form) <= g.post0) break
+      if (gammas.post(L, p, Sigma.g, Y, eXB, Z, V, gammas, C, rho, form) <= g.post0) break
       L = L - w
     }
     repeat
     {
       if (R >= upper) break
-      if (gammas.post(R, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form) <= g.post0) break
+      if (gammas.post(R, p, Sigma.g, Y, eXB, Z, V, gammas, C, rho, form) <= g.post0) break
       R = R + w
     }
   } else if (m > 1) {
@@ -187,14 +191,14 @@ univ.gammas.slice.sampling = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C
     
     while (J > 0) {
       if (L <= lower) break
-      if (gammas.post(L, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form) <= g.post0) break
+      if (gammas.post(L, p, Sigma.g, Y, eXB, Z, V, gammas, C, rho, form) <= g.post0) break
       L = L - w
       J = J - 1
     }
     
     while (K > 0) {
       if (R >= upper) break
-      if (gammas.post(R, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form) <= g.post0) break
+      if (gammas.post(R, p, Sigma.g, Y, eXB, Z, V, gammas, C, rho, form) <= g.post0) break
       R = R + w
       K = K - 1
     }
@@ -210,7 +214,7 @@ univ.gammas.slice.sampling = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C
   repeat
   {
     g1 = runif(1, L, R)
-    g.post1 = gammas.post(g1, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form)
+    g.post1 = gammas.post(g1, p, Sigma.g, Y, eXB, Z, V, gammas, C, rho, form)
     
     if (g.post1 >= g.post0) break
     if (g1 > g0) {
@@ -222,14 +226,14 @@ univ.gammas.slice.sampling = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C
   return(g1)
 }
 
-#' @title lambda.slice.sampling
-#' @description univariate slice sampling for lambda
+#' @title rho.slice.sampling
+#' @description univariate slice sampling for rho
 #'
 #' @param Y response variable
 #' @param eXB exponentiated vector of covariates times betas
-#' @param alpha probability of true censoring
+#' @param delta probability of true censoring
 #' @param C censoring indicator
-#' @param lambda current value of lambda
+#' @param rho current value of rho
 #' @param w size of the slice in the slice sampling
 #' @param m limit on steps in the slice sampling
 #' @param lower lower bound on support of the distribution
@@ -238,9 +242,9 @@ univ.gammas.slice.sampling = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C
 #' @return One sample update using slice sampling
 #'
 #' @export
-lambda.slice.sampling = function(Y, eXB, alpha, C, lambda, w, m, lower = 0.01, upper = +Inf) {
-  l0 = lambda
-  l.post0 = lambda.post(Y, eXB, alpha, C, l0)
+rho.slice.sampling = function(Y, eXB, delta, C, rho, w, m, lower = 0.01, upper = +Inf) {
+  l0 = rho
+  l.post0 = rho.post(Y, eXB, delta, C, l0)
   
   u = runif(1, 0, w)
   L = l0 - u
@@ -248,13 +252,13 @@ lambda.slice.sampling = function(Y, eXB, alpha, C, lambda, w, m, lower = 0.01, u
   if (is.infinite(m)) {
     repeat
     { if (L <= lower) break
-      if (lambda.post(Y, eXB, alpha, C, L) <= l.post0) break
+      if (rho.post(Y, eXB, delta, C, L) <= l.post0) break
       L = L - w
     }
     repeat
     {
       if (R >= upper) break
-      if (lambda.post(Y, eXB, alpha, C, R) <= l.post0) break
+      if (rho.post(Y, eXB, delta, C, R) <= l.post0) break
       R = R + w
     }
   } else if (m > 1) {
@@ -263,14 +267,14 @@ lambda.slice.sampling = function(Y, eXB, alpha, C, lambda, w, m, lower = 0.01, u
     
     while (J > 0) {
       if (L <= lower) break
-      if (lambda.post(Y, eXB, alpha, C, L) <= l.post0) break
+      if (rho.post(Y, eXB, delta, C, L) <= l.post0) break
       L = L - w
       J = J - 1
     }
     
     while (K > 0) {
       if (R >= upper) break
-      if (lambda.post(Y, eXB, alpha, C, R) <= l.post0) break
+      if (rho.post(Y, eXB, delta, C, R) <= l.post0) break
       R = R + w
       K = K - 1
     }
@@ -286,7 +290,7 @@ lambda.slice.sampling = function(Y, eXB, alpha, C, lambda, w, m, lower = 0.01, u
   repeat
   {
     l1 = runif(1, L, R)
-    l.post1 = lambda.post(Y, eXB, alpha, C, l1)
+    l.post1 = rho.post(Y, eXB, delta, C, l1)
     
     if (l.post1 >= l.post0) break
     if (l1 > l0) {
@@ -298,6 +302,228 @@ lambda.slice.sampling = function(Y, eXB, alpha, C, lambda, w, m, lower = 0.01, u
   return(l1)
 }
 
+#' @title W.slice.sampling
+#' @description slice sampling for W
+#'
+#' @param S spatial information (e.g. district)
+#' @param A adjacency information corresponding to spatial information
+#' @param lambda CAR parameter 
+#' @param Y response variable
+#' @param X covariates for betas
+#' @param W spatial random effects
+#' @param betas current value of betas
+#' @param delta probability of true censoring
+#' @param C censoring indicator
+#' @param rho current value of rho
+#' @param w size of the slice in the slice sampling
+#' @param m limit on steps in the slice sampling
+#' @param form type of parametric model (Exponential or Weibull)
+#'
+#' @return One sample update using slice sampling
+#'
+#' @export
+W.slice.sampling = function(S, A, lambda, Y, X, W, betas, delta, C, rho, w, m, form = form) {
+  for (s in sample(1:length(S), length(S), replace = FALSE)) {
+    W[s] = univ.W.slice.sampling(W[s], s, S, A, lambda, Y, X, W, betas, delta, C, rho, w, m, form = form)
+  }
+  return(W)
+}
+
+#' @title univ.W.slice.sampling
+#' @description univariate slice sampling for W.s
+#'
+#' @param W.s current value of the sth element of W
+#' @param s sth element
+#' @param S spatial information (e.g. district)
+#' @param A adjacency information corresponding to spatial information
+#' @param lambda CAR parameter 
+#' @param Y response variable
+#' @param X covariates for betas
+#' @param W spatial random effects
+#' @param betas current value of betas
+#' @param delta probability of true censoring
+#' @param C censoring indicator
+#' @param rho current value of rho
+#' @param w size of the slice in the slice sampling
+#' @param m limit on steps in the slice sampling
+#' @param lower lower bound on support of the distribution
+#' @param upper upper bound on support of the distribution
+#' @param form type of parametric model (Exponential or Weibull)
+#'
+#' @return One sample update using slice sampling
+#'
+#' @export
+univ.W.slice.sampling = function(W.s, s, S, A, lambda, Y, X, W, betas, delta, C, rho, w, m, lower = -Inf, upper = +Inf, form) {
+  W0 = W.s
+  W.post0 = W.post(W0, s, S, A, lambda, Y, X, W, betas, delta, C, rho, form)
+  
+  u = runif(1, 0, w)
+  L = W0 - u
+  R = W0 + (w - u)
+  if (is.infinite(m)) {
+    repeat
+    { if (L <= lower) break
+      if (W.post(L, s, S, A, lambda, Y, X, W, betas, delta, C, rho, form) <= W.post0) break
+      L = L - w
+    }
+    repeat
+    {
+      if (R >= upper) break
+      if (W.post(R, s, S, A, lambda, Y, X, W, betas, delta, C, rho, form) <= W.post0) break
+      R = R + w
+    }
+  } else if (m > 1) {
+    J = floor(runif(1, 0, m))
+    K = (m - 1) - J
+    
+    while (J > 0) {
+      if (L <= lower) break
+      if (W.post(L, s, S, A, lambda, Y, X, W, betas, delta, C, rho, form) <= W.post0) break
+      L = L - w
+      J = J - 1
+    }
+    
+    while (K > 0) {
+      if (R >= upper) break
+      if (W.post(R, s, S, A, lambda, Y, X, W, betas, delta, C, rho, form) <= W.post0) break
+      R = R + w
+      K = K - 1
+    }
+  }
+  
+  if (L < lower) {
+    L = lower
+  }
+  if (R > upper) {
+    R = upper
+  }
+  
+  repeat
+  {
+    W1 = runif(1, L, R)
+    W.post1 = W.post(W1, s, S, A, lambda, Y, X, W, betas, delta, C, rho, form)
+    
+    if (W.post1 >= W.post0) break
+    if (W1 > W0) {
+      R = W1
+    } else {
+      L = W1
+    }
+  }
+  return(W1)
+}
+
+
+#' @title V.slice.sampling
+#' @description slice sampling for W
+#'
+#' @param S spatial information (e.g. district)
+#' @param A adjacency information corresponding to spatial information
+#' @param lambda CAR parameter 
+#' @param Y response variable
+#' @param eXB exponentiated vector of covariates times betas
+#' @param Z covariates for gammas
+#' @param V spatial random effects
+#' @param gammas current value of gammas
+#' @param C censoring indicator
+#' @param rho current value of rho
+#' @param w size of the slice in the slice sampling
+#' @param m limit on steps in the slice sampling
+#' @param form type of parametric model (Exponential or Weibull)
+#'
+#' @return One sample update using slice sampling
+#'
+#' @export
+V.slice.sampling = function(S, A, lambda, Y, eXB, Z, V, gammas, C, rho, w, m, form = form) {
+  for (s in sample(1:length(S), length(S), replace = FALSE)) {
+    V[s] = univ.V.slice.sampling(V[s], s, S, A, lambda, Y, eXB, Z, V, gammas, C, rho, w, m, form = form)
+  }
+  return(V)
+}
+
+#' @title univ.V.slice.sampling
+#' @description univariate slice sampling for gammas.p
+#'
+#' @param V.s current value of the sth element of V
+#' @param s sth element
+#' @param S spatial information (e.g. district)
+#' @param A adjacency information corresponding to spatial information
+#' @param lambda CAR parameter 
+#' @param Y response variable
+#' @param eXB exponentiated vector of covariates times betas
+#' @param Z covariates for gammas
+#' @param V spatial random effects
+#' @param gammas current value of gammas
+#' @param C censoring indicator
+#' @param rho current value of rho
+#' @param w size of the slice in the slice sampling
+#' @param m limit on steps in the slice sampling
+#' @param lower lower bound on support of the distribution
+#' @param upper upper bound on support of the distribution
+#' @param form type of parametric model (Exponential or Weibull)
+#'
+#' @return One sample update using slice sampling
+#'
+#' @export
+univ.V.slice.sampling = function(V.s, s, S, A, lambda, Y, eXB, Z, V, gammas, C, rho, w, m, lower = -Inf, upper = +Inf, form) {
+  V0 = V.s
+  V.post0 = V.post(V0, s, S, A, lambda, Y, eXB, Z, V, gammas, C, rho, form)
+  
+  u = runif(1, 0, w)
+  L = V0 - u
+  R = V0 + (w - u)
+  if (is.infinite(m)) {
+    repeat
+    { if (L <= lower) break
+      if (V.post(L, s, S, A, lambda, Y, eXB, Z, V, gammas, C, rho, form) <= V.post0) break
+      L = L - w
+    }
+    repeat
+    {
+      if (R >= upper) break
+      if (V.post(R, s, S, A, lambda, Y, eXB, Z, V, gammas, C, rho, form) <= V.post0) break
+      R = R + w
+    }
+  } else if (m > 1) {
+    J = floor(runif(1, 0, m))
+    K = (m - 1) - J
+    
+    while (J > 0) {
+      if (L <= lower) break
+      if (V.post(L, s, S, A, lambda, Y, eXB, Z, V, gammas, C, rho, form) <= V.post0) break
+      L = L - w
+      J = J - 1
+    }
+    
+    while (K > 0) {
+      if (R >= upper) break
+      if (V.post(R, s, S, A, lambda, Y, eXB, Z, V, gammas, C, rho, form) <= V.post0) break
+      R = R + w
+      K = K - 1
+    }
+  }
+  
+  if (L < lower) {
+    L = lower
+  }
+  if (R > upper) {
+    R = upper
+  }
+  
+  repeat
+  {
+    V1 = runif(1, L, R)
+    V.post1 = V.post(V1, s, S, A, lambda, Y, eXB, Z, V, gammas, C, rho, form)
+    
+    if (V.post1 >= V.post0) break
+    if (V1 > V0) {
+      R = V1
+    } else {
+      L = V1
+    }
+  }
+  return(V1)
+}
 
 #' @title betas.post
 #' @description log-posterior distribution of betas with pth element fixed as betas.p
@@ -307,24 +533,21 @@ lambda.slice.sampling = function(Y, eXB, alpha, C, lambda, w, m, lower = 0.01, u
 #' @param Sigma.b variance estimate of betas
 #' @param Y response variable
 #' @param X covariates for betas
+#' @param W spatial random effects
 #' @param betas current value of betas
-#' @param alpha probability of true censoring
+#' @param delta probability of true censoring
 #' @param C censoring indicator
-#' @param lambda current value of lambda
+#' @param rho current value of rho
 #' @param form type of parametric model (Exponential or Weibull)
 #'
 #' @return log- posterior density of betas
 #'
 #' @export
-betas.post = function(betas.p, p, Sigma.b, Y, X, betas, alpha, C, lambda, form) {
+betas.post = function(betas.p, p, Sigma.b, Y, X, W, betas, delta, C, rho, form) {
   betas[p] = betas.p
-  #if (form %in% "Weibull") {
-  #  eXB = exp(X %*% betas + 1 / lambda)
-  #} else {
-    eXB = exp(X %*% betas)
-  #}
+  eXB = exp(X %*% betas + W)
   lprior = dmvnorm(betas, rep(0, length(betas)), Sigma.b, log = TRUE)
-  lpost = llikWeibull(Y, eXB, alpha, C, lambda) + lprior
+  lpost = llikWeibull(Y, eXB, delta, C, rho) + lprior
   return(lpost)
 }
 
@@ -337,108 +560,197 @@ betas.post = function(betas.p, p, Sigma.b, Y, X, betas, alpha, C, lambda, form) 
 #' @param Y response variable
 #' @param eXB exponentiated vector of covariates times betas
 #' @param Z covariates for gammas
+#' @param V spatial random effects
 #' @param gammas current value of gammas
 #' @param C censoring indicator
-#' @param lambda current value of lambda
+#' @param rho current value of rho
 #' @param form type of parametric model (Exponential or Weibull)
 #'
 #' @return log- posterior density of betas
 #'
 #' @export
-gammas.post = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form) {
+gammas.post = function(gammas.p, p, Sigma.g, Y, eXB, Z, V, gammas, C, rho, form) {
   gammas[p] = gammas.p
-  if (form %in% "Weibull") {
-    alpha = 1 / (1 + exp(-Z %*% gammas - 1/lambda))
-  } else {
-    alpha = 1 / (1 + exp(-Z %*% gammas))
-  }
+  delta = 1 / (1 + exp(-Z %*% gammas - V))
   lprior = dmvnorm(gammas, rep(0, length(gammas)), Sigma.g, log = TRUE)
-  lpost = llikWeibull(Y, eXB, alpha, C, lambda) + lprior
+  lpost = llikWeibull(Y, eXB, delta, C, rho) + lprior
   return(lpost)
 }
 
-#' @title lambda.post
-#' @description log-posterior distribution of lambda
+#' @title W.post
+#' @description log-posterior distribution of W with sth element fixed as W.s
+#'
+#' @param W.s current value of the sth element of W
+#' @param s pth element
+#' @param S spatial information (e.g. district)
+#' @param A adjacency information corresponding to spatial information
+#' @param lambda CAR parameter 
+#' @param Y response variable
+#' @param X covariates for betas
+#' @param W spatial random effects
+#' @param betas current value of betas
+#' @param delta probability of true censoring
+#' @param C censoring indicator
+#' @param rho current value of rho
+#' @param form type of parametric model (Exponential or Weibull)
+#'
+#' @return log- posterior density of betas
+#'
+#' @export
+W.post = function(W.s, s, S, A, lambda, Y, X, W, betas, delta, C, rho, form) {
+  W[s] = W.s
+  eXB = exp(X %*% betas + W)
+  adj = which(A[s,]==1)
+  m_i = length(adj)
+  W_i_bar = mean(W[adj])
+  lprior = dnorm(W[s], W_i_bar, 1/(lambda * m_i), log = TRUE)
+  lpost = llikWeibull(Y, eXB, delta, C, rho) + lprior
+  return(lpost)
+}
+
+#' @title V.post
+#' @description log-posterior distribution of V with sth element fixed as V.s
+#'
+#' @param V.s current value of the sth element of V
+#' @param s sth element
+#' @param S spatial information (e.g. district)
+#' @param A adjacency information corresponding to spatial information
+#' @param lambda CAR parameter 
+#' @param Y response variable
+#' @param eXB exponentiated vector of covariates times betas
+#' @param Z covariates for gammas
+#' @param V spatial random effects
+#' @param gammas current value of gammas
+#' @param C censoring indicator
+#' @param rho current value of rho
+#' @param form type of parametric model (Exponential or Weibull)
+#'
+#' @return log- posterior density of betas
+#'
+#' @export
+V.post = function(V.s, s, S, A, lambda, Y, eXB, Z, V, gammas, C, rho, form) {
+  V[s] = V.s
+  delta = 1 / (1 + exp(-Z %*% gammas - V))
+  adj = which(A[s,]==1)
+  m_i = length(adj)
+  V_i_bar = mean(V[adj])
+  lprior = dnorm(V[s], V_i_bar, 1/(lambda * m_i), log = TRUE)
+  lpost = llikWeibull(Y, eXB, delta, C, rho) + lprior
+  return(lpost)
+}
+
+#' @title rho.post
+#' @description log-posterior distribution of rho
 #'
 #' @param Y response variable
 #' @param eXB exponentiated vector of covariates times betas
-#' @param alpha probability of true censoring
+#' @param delta probability of true censoring
 #' @param C censoring indicator
-#' @param lambda current value of lambda
+#' @param rho current value of rho
 #' @param a shape parameter of gammas prior
 #' @param b scale parameter of gammas prior
 #'
 #' @return log- posterior density of betas
 #'
 #' @export
-lambda.post = function(Y, eXB, alpha, C, lambda, a = 1, b = 1) {
-  lprior = dgamma(lambda, a, b, log = TRUE)
-  lpost = llikWeibull(Y, eXB, alpha, C, lambda) + lprior
+rho.post = function(Y, eXB, delta, C, rho, a = 1, b = 1) {
+  lprior = dgamma(rho, a, b, log = TRUE)
+  lpost = llikWeibull(Y, eXB, delta, C, rho) + lprior
   return(lpost)
 }
 
-#' @title mcmcOF
-#' @description Markov Chain Monte Carlo (MCMC) to run Bayesian parametric OF model
+
+#' @title lambda.gibbs.sampling
+#' @description log-posterior distribution of rho
+#'
+#' @param S spatial information (e.g. district)
+#' @param A adjacency information corresponding to spatial information
+#' @param W spatial random effects
+#' @param V spatial random effects
+#' @param a shape parameter of gammas prior
+#' @param b scale parameter of gammas prior
+#'
+#' @return log- posterior density of betas
+#'
+#' @export
+lambda.gibbs.sampling <- function(S, A, W, V, a = 1, b = 1) {
+  Ns = length(S)
+  sums = 0
+  for (i in 1:Ns) {
+    adj = which(A[i,]==1)
+    m_i = length(adj)
+    W_i_bar = mean(W[adj])
+    V_i_bar = mean(V[adj])
+    sums = sums + m_i/2 * ((W[i]-W_i_bar)^2 + (V[i]-V_i_bar)^2)
+  }
+  lambda = rgamma(1, Ns + a, sums + b)
+  return(lambda)
+}
+
+#' @title mcmcSpatialCure
+#' @description Markov Chain Monte Carlo (MCMC) to run Bayesian spatial cure model
 #'
 #' @param Y response variable
 #' @param C censoring indicator
 #' @param X covariates for betas
 #' @param Z covariates for gammas
+#' @param S spatial information (e.g. district)
+#' @param A adjacency information corresponding to spatial information
 #' @param N number of MCMC iterations
 #' @param burn burn-in to be discarded
 #' @param thin thinning to prevent from autocorrelation
-#' @param w size of the slice in the slice sampling for (betas, gammas, lambda)
+#' @param w size of the slice in the slice sampling for (betas, gammas, rho)
 #' @param m limit on steps in the slice sampling
 #' @param form type of parametric model (Exponential or Weibull)
 #'
 #' @return chain of the variables of interest
 #'
 #' @export
-mcmcOF <- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
+mcmcSpatialCure <- function(Y, C, X, Z, S, A, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
   p1 = dim(X)[2]
   p2 = dim(Z)[2]
-  
   # initial values
   betas = rep(0, p1)
   gammas = rep(0, p2)
+  rho = 1
   lambda = 1
-  if (form %in% "Weibull") {
-    alpha = 1 / (1 + exp(-Z %*% gammas - 1/lambda))
-  } else {
-    alpha = 1 / (1 + exp(-Z %*% gammas))
-  }
+  W = rep(0, length(Y))
+  V = rep(0, length(Y))
+  delta = 1 / (1 + exp(-Z %*% gammas + V))
   Sigma.b = 10 * p1 * diag(p1)
   Sigma.g = 10 * p2 * diag(p2)
   betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)
   gammas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p2)
+  rho.samp = rep(NA, (N - burn) / thin)
   lambda.samp = rep(NA, (N - burn) / thin)
+  W.samp = matrix(NA, nrow = (N - burn) / thin, ncol = length(Y))
+  V.samp = matrix(NA, nrow = (N - burn) / thin, ncol = length(Y))
   for (iter in 1:N) {
     if (iter %% 1000 == 0) print(iter)
     if (iter > burn) {
-    Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
-    Sigma.g = riwish(1 + p2, gammas %*% t(gammas) + p2 * diag(p2))
+      Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
+      Sigma.g = riwish(1 + p2, gammas %*% t(gammas) + p2 * diag(p2))
     }
-    betas = betas.slice.sampling(Sigma.b, Y, X, betas, alpha, C, lambda, w[1], m, form = form)
-    #if (form %in% "Weibull") {
-    #  eXB = exp(X %*% betas + 1/lambda)
-    #} else {
-      eXB = exp(X %*% betas)
-    #}
-    gammas = gammas.slice.sampling(Sigma.g, Y, eXB, Z, gammas, C, lambda, w[2], m, form = form)
+    #CAR model
+    lambda = lambda.gibbs.sampling(S, A, W, V)
+    W = W.slice.sampling(S, A, lambda, Y, X, W, betas, delta, C, rho, w[1], m, form = form)
+    V = V.slice.sampling(S, A, lambda, Y, eXB, Z, V, gammas, C, rho, w[2], m, form = form)
+    betas = betas.slice.sampling(Sigma.b, Y, X, W, betas, delta, C, rho, w[1], m, form = form)
+    eXB = exp(X %*% betas + W)
+    gammas = gammas.slice.sampling(Sigma.g, Y, eXB, Z, V, gammas, C, rho, w[2], m, form = form)
+    delta = 1 / (1 + exp(-Z %*% gammas + V))
     if (form %in% "Weibull") {
-      alpha = 1 / (1 + exp(-Z %*% gammas - 1/lambda))
-    } else {
-      alpha = 1 / (1 + exp(-Z %*% gammas))
-    }
-    if (form %in% "Weibull") {
-      lambda = lambda.slice.sampling(Y, eXB, alpha, C, lambda, w[3], m)
+      rho = rho.slice.sampling(Y, eXB, delta, C, rho, w[3], m)
     } 
     if (iter > burn & (iter - burn) %% thin == 0) {
       betas.samp[(iter - burn) / thin, ] = betas
       gammas.samp[(iter - burn) / thin, ] = gammas
+      rho.samp[(iter - burn) / thin] = rho
       lambda.samp[(iter - burn) / thin] = lambda
+      W.samp[(iter - burn) / thin] = W
+      V.samp[(iter - burn) / thin] = V
     }
   }
-  return(list(betas = betas.samp, gammas = gammas.samp, lambda = lambda.samp))
+  return(list(betas = betas.samp, gammas = gammas.samp, rho = rho.samp, lambda.samp = lambda.samp, W = W.samp, V = V.samp))
 }
 

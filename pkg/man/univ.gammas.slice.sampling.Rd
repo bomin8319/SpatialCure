@@ -4,7 +4,7 @@
 \alias{univ.gammas.slice.sampling}
 \title{univ.gammas.slice.sampling}
 \usage{
-univ.gammas.slice.sampling(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda,
+univ.gammas.slice.sampling(gammas.p, p, Sigma.g, Y, eXB, Z, V, gammas, C, rho,
   w, m, lower = -Inf, upper = +Inf, form)
 }
 \arguments{
@@ -20,11 +20,13 @@ univ.gammas.slice.sampling(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda,
 
 \item{Z}{covariates for gammas}
 
+\item{V}{spatial random effects}
+
 \item{gammas}{current value of gammas}
 
 \item{C}{censoring indicator}
 
-\item{lambda}{current value of lambda}
+\item{rho}{current value of rho}
 
 \item{w}{size of the slice in the slice sampling}
 

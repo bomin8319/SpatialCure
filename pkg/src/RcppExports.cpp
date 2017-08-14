@@ -7,39 +7,23 @@
 using namespace Rcpp;
 
 // llikWeibull
-double llikWeibull(arma::vec Y, arma::vec eXB, arma::vec alpha, arma::vec C, double lambda);
-RcppExport SEXP _SpatialCure_llikWeibull(SEXP YSEXP, SEXP eXBSEXP, SEXP alphaSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
+double llikWeibull(arma::vec Y, arma::vec eXB, arma::vec delta, arma::vec C, double rho);
+RcppExport SEXP _SpatialCure_llikWeibull(SEXP YSEXP, SEXP eXBSEXP, SEXP deltaSEXP, SEXP CSEXP, SEXP rhoSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type eXB(eXBSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type alpha(alphaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type delta(deltaSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type C(CSEXP);
-    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(llikWeibull(Y, eXB, alpha, C, lambda));
-    return rcpp_result_gen;
-END_RCPP
-}
-// llikWeibull2
-double llikWeibull2(arma::vec Y, arma::vec eXB, arma::vec alpha, arma::vec C, double lambda);
-RcppExport SEXP _SpatialCure_llikWeibull2(SEXP YSEXP, SEXP eXBSEXP, SEXP alphaSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type eXB(eXBSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type C(CSEXP);
-    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(llikWeibull2(Y, eXB, alpha, C, lambda));
+    Rcpp::traits::input_parameter< double >::type rho(rhoSEXP);
+    rcpp_result_gen = Rcpp::wrap(llikWeibull(Y, eXB, delta, C, rho));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
     {"_SpatialCure_llikWeibull", (DL_FUNC) &_SpatialCure_llikWeibull, 5},
-    {"_SpatialCure_llikWeibull2", (DL_FUNC) &_SpatialCure_llikWeibull2, 5},
     {NULL, NULL, 0}
 };
 

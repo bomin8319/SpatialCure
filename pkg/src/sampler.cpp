@@ -37,6 +37,6 @@ double llikWeibull (arma::vec Y,
   arma::uvec ids4 = find(leXB == -arma::datum::inf);
   leXB.elem(ids4).fill(-740);
 
-  arma::vec llik = C % (ldelta + log(rho) + leXB + log(dexp2) - rho * (eXB % Y)) + (1 - C) % log(llik1);
+  arma::vec llik = C % (ldelta + log(rho) + leXB + log(dexp2) - pow(eXB % Y, rho)) + (1 - C) % log(llik1);
   return sum(llik);
 }

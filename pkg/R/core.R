@@ -754,3 +754,103 @@ mcmcSpatialCure <- function(Y, C, X, Z, S, A, N, burn, thin, w = c(1, 1, 1), m =
   return(list(betas = betas.samp, gammas = gammas.samp, rho = rho.samp, lambda.samp = lambda.samp, W = W.samp, V = V.samp))
 }
 
+
+#' @title mcmcCure
+#' @description Markov Chain Monte Carlo (MCMC) to run Bayesian cure model
+#'
+#' @param Y response variable
+#' @param C censoring indicator
+#' @param X covariates for betas
+#' @param Z covariates for gammas
+#' @param N number of MCMC iterations
+#' @param burn burn-in to be discarded
+#' @param thin thinning to prevent from autocorrelation
+#' @param w size of the slice in the slice sampling for (betas, gammas, rho)
+#' @param m limit on steps in the slice sampling
+#' @param form type of parametric model (Exponential or Weibull)
+#'
+#' @return chain of the variables of interest
+#'
+#' @export
+mcmcCure <- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
+  p1 = dim(X)[2]
+  p2 = dim(Z)[2]
+  # initial values
+  betas = rep(0, p1)
+  gammas = rep(0, p2)
+  rho = 1
+  lambda = 1
+  W = rep(0, length(Y))
+  V = rep(0, length(Y))
+  delta = 1 / (1 + exp(-Z %*% gammas + V))
+  Sigma.b = 10 * p1 * diag(p1)
+  Sigma.g = 10 * p2 * diag(p2)
+  betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)
+  gammas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p2)
+  rho.samp = rep(NA, (N - burn) / thin)
+  for (iter in 1:N) {
+    if (iter %% 1000 == 0) print(iter)
+    if (iter > burn) {
+      Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
+      Sigma.g = riwish(1 + p2, gammas %*% t(gammas) + p2 * diag(p2))
+    }
+    betas = betas.slice.sampling(Sigma.b, Y, X, W, betas, delta, C, rho, w[1], m, form = form)
+    eXB = exp(X %*% betas + W)
+    gammas = gammas.slice.sampling(Sigma.g, Y, eXB, Z, V, gammas, C, rho, w[2], m, form = form)
+    delta = 1 / (1 + exp(-Z %*% gammas + V))
+    if (form %in% "Weibull") {
+      rho = rho.slice.sampling(Y, eXB, delta, C, rho, w[3], m)
+    } 
+    if (iter > burn & (iter - burn) %% thin == 0) {
+      betas.samp[(iter - burn) / thin, ] = betas
+      gammas.samp[(iter - burn) / thin, ] = gammas
+      rho.samp[(iter - burn) / thin] = rho
+    }
+  }
+  return(list(betas = betas.samp, gammas = gammas.samp, rho = rho.samp))
+}
+
+
+#' @title mcmcSurv
+#' @description Markov Chain Monte Carlo (MCMC) to run Bayesian survival (Weibull) model
+#'
+#' @param Y response variable
+#' @param C censoring indicator
+#' @param X covariates for betas
+#' @param N number of MCMC iterations
+#' @param burn burn-in to be discarded
+#' @param thin thinning to prevent from autocorrelation
+#' @param w size of the slice in the slice sampling for (betas, gammas, rho)
+#' @param m limit on steps in the slice sampling
+#' @param form type of parametric model (Exponential or Weibull)
+#'
+#' @return chain of the variables of interest
+#'
+#' @export
+mcmcSurv <- function(Y, C, X, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
+  p1 = dim(X)[2]
+  # initial values
+  betas = rep(0, p1)
+  rho = 1
+  W = rep(0, length(Y))
+  delta = rep(1, length(Y))
+  Sigma.b = 10 * p1 * diag(p1)
+  betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)
+  rho.samp = rep(NA, (N - burn) / thin)
+  for (iter in 1:N) {
+    if (iter %% 1000 == 0) print(iter)
+    if (iter > burn) {
+      Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
+    }
+    betas = betas.slice.sampling(Sigma.b, Y, X, W, betas, delta, C, rho, w[1], m, form = form)
+    eXB = exp(X %*% betas + W)
+    if (form %in% "Weibull") {
+      rho = rho.slice.sampling(Y, eXB, delta, C, rho, w[3], m)
+    } 
+    if (iter > burn & (iter - burn) %% thin == 0) {
+      betas.samp[(iter - burn) / thin, ] = betas
+      rho.samp[(iter - burn) / thin] = rho
+    }
+  }
+  return(list(betas = betas.samp, rho = rho.samp))
+}

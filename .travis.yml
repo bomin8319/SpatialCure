@@ -24,7 +24,9 @@ r_packages:
   - mvtnorm
   - MCMCpack
   - stats
-
+  - Rcpp
+  - RcppArmadillo
+  - coda
 notifications:
   email:
     on_success: change

@@ -240,22 +240,17 @@ library(devtools)
 document()
 check()
 document()
-document()
-document()
 check()
 ?mcmcSurv
 ??mcmcSurv
 document9
-documnet()
 documnet()
 document()
 check()
 install()
 1 / (1 + exp(-Inf))
 document()
-document()
 check()
-document()
 document()
 check()
 install()
@@ -542,3 +537,89 @@ Y<-ycen#
 C<-di#
 X<-cbind(1,x)
 mcmcSurv(Y, C, X, 1500, 500, 1, form = "Weibull")
+library(devtools)
+document()
+check()
+install()
+library(SpatialCure)
+#load necessary libraries 						                                 #
+library(foreign)#
+library(car)#
+library(MASS)#
+library(VGAM)#
+library(survival)#
+library(msm)#
+library(verification)#
+library(corpcor)#
+library(Design)
+#set the number of observations#
+n<-1000#
+#set the number of simulations, and create matrices to store the results#
+#nsims<-1000#
+nsims<-1000#
+#history matrix for true estimates#
+tru.est<-matrix(NA,nrow=nsims,ncol=8)#
+#history matrix for cox estimates#
+cox.est<-matrix(NA,nrow=nsims,ncol=2)#
+#history matrix for exp estimates#
+exp.est<-matrix(NA,nrow=nsims,ncol=14)#
+#history matrix for weibull estimates#
+weib.est<-matrix(NA,nrow=nsims,ncol=18)#
+#history matrix for cox RMSE#
+cox.rmse<-matrix(NA,nrow=nsims,ncol=1)#
+#history matrix for exp RMSE#
+exp.rmse<-matrix(NA,nrow=nsims,ncol=7)#
+#history matrix for exp RMSE#
+weib.rmse<-matrix(NA,nrow=nsims,ncol=9)#
+#history matrix for cox CP#
+cox.cp<-matrix(NA,nrow=nsims,ncol=1)#
+#history matrix for exp CP#
+exp.cp<-matrix(NA,nrow=nsims,ncol=7)#
+#history matrix for exp CP#
+weib.cp<-matrix(NA,nrow=nsims,ncol=9)#
+#create covariates#
+x<-runif(n, min=-2.5, max=12)#
+z<-log(runif(n, min=1, max=100))
+i
+i = 1
+#Assign parameter values#
+tru.est[i,1]<-1#
+tru.est[i,2]<-3.5#
+tru.est[i,3]<--2#
+tru.est[i,4]<--2#
+tru.est[i,5]<-3#
+tru.est[i,6]<-1#
+myrates <- exp(tru.est[i,1]+(tru.est[i,2]*x)) #
+y <- rexp(n, rate = myrates) # generates the r.v.#
+cen <- rexp(n, rate = 1 )#
+ycen <- pmin(y, cen)#
+di <- as.numeric(y <= cen)#
+tru.est[i,7]<-table(di)[1]#
+#create parameters for ZG#
+phi<-1/(1+exp(-(tru.est[i,3]+tru.est[i,4]*z+tru.est[i,5]*x)))#
+yzero<-matrix(0,n,1)#
+error<--1*rlogis(n)#
+flag<-error>qlogis(phi)#
+yzero[flag]<-error[flag]#
+flag<-yzero==0#
+ycen[flag]<-ifelse(di[flag]==1,cen[flag],ycen[flag])#
+di[flag]<-ifelse(di[flag]==1,yzero[flag],di[flag])#
+tru.est[i,8]<-table(di)[1]#
+data<-cbind(ycen,di,x,z)
+#set data, Y and X#
+data<-data#
+Y<-ycen#
+C<-di#
+X<-cbind(1,x)#
+Z<-cbind(1,z,x)
+mcmcCure(Y, C, X, Z, 1500, 500, 1, form = "Weibull")
+hey = mcmcCure(Y, C, X, Z, 6500, 1500, 5, form = "Weibull")
+names(hey)
+colMeans(hey$gammas)
+hey$gammas
+mcmcSpatialSurv
+mcmcSpatialSurv
+mcmcSpatSurv
+mcmcSpatCure
+mcmcSpatialCure
+sample(1:5, 1000, replace = TRUE)

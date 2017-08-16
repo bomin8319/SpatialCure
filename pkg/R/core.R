@@ -600,7 +600,7 @@ gammas.post = function(gammas.p, p, Sigma.g, Y, eXB, Z, V, gammas, C, rho, form)
 W.post = function(W.s, s, S, A, lambda, Y, X, W, betas, delta, C, rho, form) {
   W[s] = W.s
   eXB = exp(X %*% betas + W)
-  adj = which(A[s,]==1)
+  adj = which(A[s,] == 1)
   m_i = length(adj)
   W_i_bar = mean(W[adj])
   lprior = dnorm(W[s], W_i_bar, 1/(lambda * m_i), log = TRUE)
@@ -631,7 +631,7 @@ W.post = function(W.s, s, S, A, lambda, Y, X, W, betas, delta, C, rho, form) {
 V.post = function(V.s, s, S, A, lambda, Y, eXB, Z, V, gammas, C, rho, form) {
   V[s] = V.s
   delta = 1 / (1 + exp(-Z %*% gammas - V))
-  adj = which(A[s,]==1)
+  adj = which(A[s,] == 1)
   m_i = length(adj)
   V_i_bar = mean(V[adj])
   lprior = dnorm(V[s], V_i_bar, 1/(lambda * m_i), log = TRUE)
@@ -716,7 +716,7 @@ mcmcSpatialCure <- function(Y, C, X, Z, S, A, N, burn, thin, w = c(1, 1, 1), m =
   lambda = 1
   W = rep(0, length(Y))
   V = rep(0, length(Y))
-  delta = 1 / (1 + exp(-Z %*% gammas + V))
+  delta = 1 / (1 + exp(- Z %*% gammas - V))
   Sigma.b = 10 * p1 * diag(p1)
   Sigma.g = 10 * p2 * diag(p2)
   betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)
@@ -738,7 +738,7 @@ mcmcSpatialCure <- function(Y, C, X, Z, S, A, N, burn, thin, w = c(1, 1, 1), m =
     betas = betas.slice.sampling(Sigma.b, Y, X, W, betas, delta, C, rho, w[1], m, form = form)
     eXB = exp(X %*% betas + W)
     gammas = gammas.slice.sampling(Sigma.g, Y, eXB, Z, V, gammas, C, rho, w[2], m, form = form)
-    delta = 1 / (1 + exp(-Z %*% gammas + V))
+    delta = 1 / (1 + exp(- Z %*% gammas - V))
     if (form %in% "Weibull") {
       rho = rho.slice.sampling(Y, eXB, delta, C, rho, w[3], m)
     } 
@@ -782,7 +782,7 @@ mcmcCure <- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
   lambda = 1
   W = rep(0, length(Y))
   V = rep(0, length(Y))
-  delta = 1 / (1 + exp(-Z %*% gammas + V))
+  delta = 1 / (1 + exp(-Z %*% gammas - V))
   Sigma.b = 10 * p1 * diag(p1)
   Sigma.g = 10 * p2 * diag(p2)
   betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)
@@ -797,7 +797,7 @@ mcmcCure <- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
     betas = betas.slice.sampling(Sigma.b, Y, X, W, betas, delta, C, rho, w[1], m, form = form)
     eXB = exp(X %*% betas + W)
     gammas = gammas.slice.sampling(Sigma.g, Y, eXB, Z, V, gammas, C, rho, w[2], m, form = form)
-    delta = 1 / (1 + exp(-Z %*% gammas + V))
+    delta = 1 / (1 + exp(-Z %*% gammas - V))
     if (form %in% "Weibull") {
       rho = rho.slice.sampling(Y, eXB, delta, C, rho, w[3], m)
     } 

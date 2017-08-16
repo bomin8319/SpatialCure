@@ -22,8 +22,8 @@ double llikWeibull (arma::vec Y,
                     double rho) {
   arma::vec dexp1 = exp(-pow(eXB % Y, rho));
   arma::vec dexp2 = pow(eXB % Y, rho - 1);
-  arma::vec llik1 = (1 - delta) + delta % dexp1;
-  arma::vec ldelta = log(delta);
+  arma::vec llik1 = delta + (1 - delta) % dexp1;
+  arma::vec ldelta = log(1 - delta);
   arma::vec leXB = log(eXB);
   
   arma::uvec ids0 = find(llik1 == 0);

@@ -603,7 +603,7 @@ W.post = function(W.s, s, S, A, lambda, Y, X, W, betas, delta, C, rho, form) {
   adj = which(A[s,] == 1)
   m_i = length(adj)
   W_i_bar = mean(W[adj])
-  lprior = dnorm(W[s], W_i_bar, 1/(lambda * m_i), log = TRUE)
+  lprior = dnorm(W[s], W_i_bar, sqrt(1/(lambda * m_i)), log = TRUE)
   lpost = llikWeibull(Y, eXB, delta, C, rho) + lprior
   return(lpost)
 }
@@ -634,7 +634,7 @@ V.post = function(V.s, s, S, A, lambda, Y, eXB, Z, V, gammas, C, rho, form) {
   adj = which(A[s,] == 1)
   m_i = length(adj)
   V_i_bar = mean(V[adj])
-  lprior = dnorm(V[s], V_i_bar, 1/(lambda * m_i), log = TRUE)
+  lprior = dnorm(V[s], V_i_bar, sqrt(1/(lambda * m_i)), log = TRUE)
   lpost = llikWeibull(Y, eXB, delta, C, rho) + lprior
   return(lpost)
 }

@@ -38,7 +38,7 @@ setwd("/Users/bomin8319/Desktop/SpatialCureSurv/simulation")
 set.seed(3)   
 
 #set the number of observations
-n<-200
+n<-1000
 
 #set the number of simulations, and create matrices to store the results
 nsims<-10
@@ -119,7 +119,7 @@ data<-cbind(ycen,di,x,z, s)
 Y<-ycen
 C<-di
 X<-cbind(1,x)
-Exponential <- mcmcSurv(Y, C, X, 330, 30, 1, form = "Exponential")
+Exponential <- mcmcSurv(Y, C, X, 550, 50, 1, form = "Exponential")
 output.Exponential = summary(mcmc(Exponential$betas))
 
 #store betas and ses
@@ -150,7 +150,7 @@ exp.cp[i,2]<-ifelse(tru.est[i,2]>b1.lower & tru.est[i,2]<b1.upper, 1,0)
 Y<-ycen
 C<-di
 X<-cbind(1,x)
-Weibull <- mcmcSurv(Y, C, X, 330, 30, 1, form = "Weibull")
+Weibull <- mcmcSurv(Y, C, X, 550, 50, 1, form = "Weibull")
 output.Weibull = summary(mcmc(Weibull$betas))
 output.Weibull2 = summary(mcmc(Weibull$rho))
 
@@ -188,7 +188,7 @@ C<-di
 X<-cbind(1,x)
 Z<-cbind(1,z,x)
 
-CExponential <- mcmcCure(Y, C, X, Z, 330, 30, 1, form = "Exponential")
+CExponential <- mcmcCure(Y, C, X, Z, 550, 50, 1, form = "Exponential")
 output.CExponential = summary(mcmc(CExponential$betas))
 output.CExponential2 = summary(mcmc(CExponential$gammas))
 
@@ -239,7 +239,7 @@ C<-di
 X<-cbind(1,x)
 Z<-cbind(1,z,x)
 
-CWeibull <- mcmcCure(Y, C, X, Z, 330, 30, 1, form = "Weibull")
+CWeibull <- mcmcCure(Y, C, X, Z, 550, 50, 1, form = "Weibull")
 output.CWeibull = summary(mcmc(CWeibull$betas))
 output.CWeibull2 = summary(mcmc(CWeibull$gammas))
 output.CWeibull3 = summary(mcmc(CWeibull$rho))
@@ -299,7 +299,7 @@ Z<-cbind(1,z,x)
 S<-s
 A<-a
 
-SCExponential <- mcmcSpatialCure(Y, C, X, Z, S, A, 330, 30, 1, form = "Exponential")
+SCExponential <- mcmcSpatialCure(Y, C, X, Z, S, A, 550, 50, 1, form = "Exponential")
 output.SCExponential = summary(mcmc(SCExponential$betas))
 output.SCExponential2 = summary(mcmc(SCExponential$gammas))
 output.SCExponential3 = summary(mcmc(SCExponential$W))
@@ -420,7 +420,7 @@ Z<-cbind(1,z,x)
 S<-s
 A<-a
 
-SCWeibull <- mcmcSpatialCure(Y, C, X, Z, S, A, 330, 30, 1, form = "Weibull")
+SCWeibull <- mcmcSpatialCure(Y, C, X, Z, S, A, 550, 50, 1, form = "Weibull")
 output.SCWeibull = summary(mcmc(SCWeibull$betas))
 output.SCWeibull2 = summary(mcmc(SCWeibull$gammas))
 output.SCWeibull3 = summary(mcmc(SCWeibull$rho))
@@ -543,29 +543,34 @@ colnames(main.data)<-c("true.x0","true.x1","true.z0","true.z1","true.z2","true.p
 	"exp.x0","exp.x0.se","exp.x1","exp.x1.se",
 	"cexp.x0","cexp.x0.se","cexp.x1","cexp.x1.se","cexp.z0","cexp.z0.se","cexp.z1","cexp.z1.se","cexp.z2","cexp.z2.se",
 	"scexp.x0","scexp.x0.se","scexp.x1","scexp.x1.se","scexp.z0","scexp.z0.se","scexp.z1","scexp.z1.se","scexp.z2","scexp.z2.se",
+	"scexp.l","scexp.l.se",
 	"scexp.w1","scexp.w1.se","scexp.w2","scexp.w2.se","scexp.w3","scexp.w3.se","scexp.w4","scexp.w4.se","scexp.w5","scexp.w5.se",
 	"scexp.v1","scexp.v1.se","scexp.v2","scexp.v2.se","scexp.v3","scexp.v3.se","scexp.v4","scexp.v4.se","scexp.v5","scexp.v5.se",
 	
 	"wei.x0","wei.x0.se","wei.x1","wei.x1.se","wei.p","wei.p.se",
 	"cwei.x0","cwei.x0.se","cwei.x1","cwei.x1.se","cwei.z0","cwei.z0.se","cwei.z1","cwei.z1.se","cwei.z2","cwei.z2.se","cwei.p","cwei.p.se",
 	"scwei.x0","scwei.x0.se","scwei.x1","scwei.x1.se","scwei.z0","scwei.z0.se","scwei.z1","scwei.z1.se","scwei.z2","scwei.z2.se","scwei.p","scwei.p.se",
+	"scwei.l","scwei.l.se",
 	"scwei.w1","scwei.w1.se","scwei.w2","scwei.w2.se","scwei.w3","scwei.w3.se","scwei.w4","scwei.w4.se","scwei.w5","scwei.w5.se",
 	"scwei.v1","scwei.v1.se","scwei.v2","scwei.v2.se","scwei.v3","scwei.v3.se","scwei.v4","scwei.v4.se","scwei.v5","scwei.v5.se",
 
 	"exp.x0.rmse","exp.x1.rmse","cexp.x0.rmse","cexp.x1.rmse","cexp.z0.rmse","cexp.z1.rmse","cexp.z2.rmse",
 	"scexp.x0.rmse","scexp.x1.rmse","scexp.z0.rmse","scexp.z1.rmse","scexp.z2.rmse",
+	"scexp.l.rmse",
 	"scexp.w1.rmse","scexp.w2.rmse","scexp.w3.rmse","scexp.w4.rmse","scexp.w5.rmse",
 	"scexp.v1.rmse","scexp.v2.rmse","scexp.v3.rmse","scexp.v4.rmse","scexp.v5.rmse",
 	
 	"wei.x0.rmse","wei.x1.rmse","wei.p.rmse","cwei.x0.rmse","cwei.x1.rmse","cwei.z0.rmse","cwei.z1.rmse","cwei.z2.rmse","cwei.p.rmse",
 	"scwei.x0.rmse","scwei.x1.rmse","scwei.z0.rmse","scwei.z1.rmse","scwei.z2.rmse","scwei.p.rmse",
+	"scwei.l.rmse",
 	"scwei.w1.rmse","scwei.w2.rmse","scwei.w3.rmse","scwei.w4.rmse","scwei.w5.rmse",
 	"scwei.v1.rmse","scwei.v2.rmse","scwei.v3.rmse","scwei.v4.rmse","scwei.v5.rmse",
 	
 	"exp.x0.cp","exp.x1.cp","cexp.x0.cp","cexp.x1.cp","cexp.z0.cp","cexp.z1.cp","cexp.z2.cp",
 	"wei.x0.cp","wei.x1.cp","wei.p.cp", "cwei.x0.cp","cwei.x1.cp","cwei.z0.cp","cwei.z1.cp","cwei.z2.cp","cwei.p.cp",
 	"scwei.x0.cp","scwei.x1.cp","scwei.z0.cp","scwei.z1.cp","scwei.z2.cp","scwei.p.cp",
-	"scwei.w1.cp","scwei.w2.cp","scwei.w3.cp","scwei.w4.cp","scwei.w5.cp"
+	"scwei.l.cp",
+	"scwei.w1.cp","scwei.w2.cp","scwei.w3.cp","scwei.w4.cp","scwei.w5.cp",
 	"scwei.v1.cp","scwei.v2.cp","scwei.v3.cp","scwei.v4.cp","scwei.v5.cp"
 	)
 

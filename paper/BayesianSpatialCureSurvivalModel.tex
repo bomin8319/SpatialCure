@@ -220,7 +220,9 @@ For Bayesian inference, we will implement Markov Chain Monte Carlo (MCMC) algori
 	\item[] {\textbf{Step 4.}} After $N$ iterations, summarize the parameter estimates using all sampled values (e.g. confidence intervals for posterior estimates)
 \end{itemize}
 \section{Appendix}
-\noindent While we already derived $\pi(\Sigma_{\beta}|\mathbf{\beta}_i)$ and $\pi(\Sigma_{\gamma}|\mathbf{\gamma}_i)$ (See BayesianZombieSurvivalModel draft), the closed form of full conditional distributions of $\lambda \sim \pi(\lambda|\mathbf{W})$ in Step 1 are derived as below:
+\noindent While we already derived $\pi(\Sigma_{\beta}|\mathbf{\beta}_i)$ and $\pi(\Sigma_{\gamma}|\mathbf{\gamma}_i)$ (See BayesianZombieSurvivalModel draft), the closed form of full conditional distributions of $\lambda \sim \pi(\lambda|\mathbf{W})$ in Step 1 are derived:
+\begin{itemize}
+	\item [1.] Individual frailty model
 	\begin{equation*}
 	\begin{aligned}
 \pi(\lambda|\mathbf{W}, \mathbf{V})	&\propto\pi(\mathbf{W}|\lambda)\times \pi(\mathbf{V}|\lambda)\times \pi(\lambda) \\
@@ -231,4 +233,16 @@ For Bayesian inference, we will implement Markov Chain Monte Carlo (MCMC) algori
 	&\sim \mbox{Gamma}(N + a_{\lambda},\quad \sum_{i=1}^N \frac{ m_i}{2}\Big((W_i - \overline{W_i})^2+ (V_i - \overline{V_i})^2 \Big)+b_{\lambda})	
 	\end{aligned}
 	\end{equation*} 
+	\item [2.] Shared frailty model
+		\begin{equation*}
+		\begin{aligned}
+		\pi(\lambda|\mathbf{W}, \mathbf{V})	&\propto\pi(\mathbf{W}|\lambda)\times \pi(\mathbf{V}|\lambda)\times \pi(\lambda) \\
+		&\propto \Big(\prod_{j=1}^J \pi(W_j|\lambda)\Big) \times\Big(\prod_{j=1}^J \pi(V_j|\lambda)\Big) \times \pi(\lambda)\\
+		& \propto \Big(\prod_{j=1}^J N(\overline{W_j}, 1/(\lambda m_j)) \times N(\overline{V_j}, 1/(\lambda m_j)) \Big) \times \mbox{Gamma}(a_{\lambda}, b_{\lambda})\\
+		& \propto \lambda^{\frac{J}{2}} \lambda^{\frac{J}{2}} \mbox{exp}\{-\sum_{j=1}^J \frac{\lambda m_j}{2}\Big((W_j - \overline{W_j})^2 + (V_j - \overline{V_j})^2\Big)\} \times \lambda^{a_{\lambda}-1}\mbox{exp}\{-b_{\lambda}\lambda\}\\
+		& \propto \lambda^{{J} + a_{\lambda}-1}\mbox{exp}\{-(\sum_{j=1}^N \frac{ m_j}{2}\Big((W_j - \overline{W_j})^2 + (V_j - \overline{V_j})^2\Big)+b_{\lambda})\lambda\} \\
+		&\sim \mbox{Gamma}(J + a_{\lambda},\quad \sum_{j=1}^N \frac{ m_j}{2}\Big((W_j - \overline{W_j})^2+ (V_j - \overline{V_j})^2 \Big)+b_{\lambda})	
+		\end{aligned}
+		\end{equation*} 
+\end{itemize}
  \end{document}

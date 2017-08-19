@@ -38,7 +38,7 @@ setwd("/Users/bomin8319/Desktop/SpatialCureSurv/simulation")
 set.seed(3)   
 
 #set the number of observations
-n<-1000
+n<-200
 
 #set the number of simulations, and create matrices to store the results
 nsims<-10

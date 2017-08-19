@@ -323,9 +323,12 @@ rho.slice.sampling = function(Y, eXB, delta, C, rho, w, m, lower = 0.01, upper =
 #'
 #' @export
 W.slice.sampling = function(S, A, lambda, Y, X, W, betas, delta, C, rho, w, m, form = form) {
-  for (s in sample(1:length(S), length(S), replace = FALSE)) {
-    W[s] = univ.W.slice.sampling(W[s], s, S, A, lambda, Y, X, W, betas, delta, C, rho, w, m, form = form)
+  S_uniq = unique(cbind(S, W))
+  W_uniq = S_uniq[order(S_uniq[,1]), 2]
+  for (s in sample(1:nrow(A), nrow(A), replace = FALSE)) {
+    W_uniq[s] = univ.W.slice.sampling(W_uniq[s], s, S, A, lambda, Y, X, W, betas, delta, C, rho, w, m, form = form)
   }
+  W = W_uniq[S]
   return(W)
 }
 
@@ -435,9 +438,12 @@ univ.W.slice.sampling = function(W.s, s, S, A, lambda, Y, X, W, betas, delta, C,
 #'
 #' @export
 V.slice.sampling = function(S, A, lambda, Y, eXB, Z, V, gammas, C, rho, w, m, form = form) {
-  for (s in sample(1:length(S), length(S), replace = FALSE)) {
-    V[s] = univ.V.slice.sampling(V[s], s, S, A, lambda, Y, eXB, Z, V, gammas, C, rho, w, m, form = form)
+  S_uniq = unique(cbind(S, V))
+  V_uniq = S_uniq[order(S_uniq[,1]), 2]
+  for (s in sample(1:nrow(A), nrow(A), replace = FALSE)) {
+    V_uniq[s] = univ.V.slice.sampling(V_uniq[s], s, S, A, lambda, Y, eXB, Z, V, gammas, C, rho, w, m, form = form)
   }
+  V = V_uniq[S]
   return(V)
 }
 
@@ -598,12 +604,14 @@ gammas.post = function(gammas.p, p, Sigma.g, Y, eXB, Z, V, gammas, C, rho, form)
 #'
 #' @export
 W.post = function(W.s, s, S, A, lambda, Y, X, W, betas, delta, C, rho, form) {
-  W[s] = W.s
+  W[which(S == s)] = W.s
   eXB = exp(X %*% betas + W)
   adj = which(A[s,] == 1)
-  m_i = length(adj)
-  W_i_bar = mean(W[adj])
-  lprior = dnorm(W[s], W_i_bar, sqrt(1/(lambda * m_i)), log = TRUE)
+  m_j = length(adj)
+  S_uniq = unique(cbind(S, W))
+  S_uniq = S_uniq[order(S_uniq[,1]),]
+  W_j_bar = mean(S_uniq[which(S_uniq[,1] %in% adj),2])
+  lprior = dnorm(W.s, W_j_bar, sqrt(1/(lambda * m_j)), log = TRUE)
   lpost = llikWeibull(Y, eXB, delta, C, rho) + lprior
   return(lpost)
 }
@@ -629,12 +637,14 @@ W.post = function(W.s, s, S, A, lambda, Y, X, W, betas, delta, C, rho, form) {
 #'
 #' @export
 V.post = function(V.s, s, S, A, lambda, Y, eXB, Z, V, gammas, C, rho, form) {
-  V[s] = V.s
+  V[which(S == s)] = V.s
   delta = 1 / (1 + exp(-Z %*% gammas - V))
   adj = which(A[s,] == 1)
-  m_i = length(adj)
-  V_i_bar = mean(V[adj])
-  lprior = dnorm(V[s], V_i_bar, sqrt(1/(lambda * m_i)), log = TRUE)
+  m_j = length(adj)
+  S_uniq = unique(cbind(S, V))
+  S_uniq = S_uniq[order(S_uniq[,1]),]
+  V_j_bar = mean(S_uniq[which(S_uniq[,1] %in% adj),2])
+  lprior = dnorm(V.s, V_j_bar, sqrt(1/(lambda * m_j)), log = TRUE)
   lpost = llikWeibull(Y, eXB, delta, C, rho) + lprior
   return(lpost)
 }
@@ -674,28 +684,30 @@ rho.post = function(Y, eXB, delta, C, rho, a = 1, b = 1) {
 #'
 #' @export
 lambda.gibbs.sampling <- function(S, A, W, V, a = 1, b = 1) {
-  Ns = length(S)
+  S_uniq = unique(cbind(S, W, V))
+  S_uniq = S_uniq[order(S_uniq[,1]),]
+  J = nrow(S_uniq)
   sums = 0
-  for (i in 1:Ns) {
-    adj = which(A[i,]==1)
-    m_i = length(adj)
-    W_i_bar = mean(W[adj])
-    V_i_bar = mean(V[adj])
-    sums = sums + m_i/2 * ((W[i]-W_i_bar)^2 + (V[i]-V_i_bar)^2)
+  for (j in 1:J) {
+    adj = which(A[j,]==1)
+    m_j = length(adj)
+    W_j_bar = mean(S_uniq[which(S_uniq[,1] %in% adj),2])
+    V_j_bar = mean(S_uniq[which(S_uniq[,1] %in% adj),3])
+    W_j = S_uniq[j, 2]
+    V_j = S_uniq[j, 3]
+    sums = sums + m_j/2 * ((W_j-W_j_bar)^2 + (V_j-V_j_bar)^2)
   }
-  lambda = rgamma(1, Ns + a, sums + b)
+  lambda = rgamma(1, J + a, sums + b)
   return(lambda)
 }
 
-#' @title mcmcSpatialCure
-#' @description Markov Chain Monte Carlo (MCMC) to run Bayesian spatial cure model
+
+#' @title mcmcSurv
+#' @description Markov Chain Monte Carlo (MCMC) to run Bayesian survival (Weibull) model
 #'
 #' @param Y response variable
 #' @param C censoring indicator
 #' @param X covariates for betas
-#' @param Z covariates for gammas
-#' @param S spatial information (e.g. district)
-#' @param A adjacency information corresponding to spatial information
 #' @param N number of MCMC iterations
 #' @param burn burn-in to be discarded
 #' @param thin thinning to prevent from autocorrelation
@@ -706,52 +718,32 @@ lambda.gibbs.sampling <- function(S, A, W, V, a = 1, b = 1) {
 #' @return chain of the variables of interest
 #'
 #' @export
-mcmcSpatialCure <- function(Y, C, X, Z, S, A, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
+mcmcSurv <- function(Y, C, X, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
   p1 = dim(X)[2]
-  p2 = dim(Z)[2]
   # initial values
   betas = rep(0, p1)
-  gammas = rep(0, p2)
   rho = 1
-  lambda = 1
   W = rep(0, length(Y))
-  V = rep(0, length(Y))
-  delta = 1 / (1 + exp(- Z %*% gammas - V))
+  delta = rep(1, length(Y))
   Sigma.b = 10 * p1 * diag(p1)
-  Sigma.g = 10 * p2 * diag(p2)
   betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)
-  gammas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p2)
   rho.samp = rep(NA, (N - burn) / thin)
-  lambda.samp = rep(NA, (N - burn) / thin)
-  W.samp = matrix(NA, nrow = (N - burn) / thin, ncol = length(Y))
-  V.samp = matrix(NA, nrow = (N - burn) / thin, ncol = length(Y))
   for (iter in 1:N) {
-    if (iter %% 1000 == 0) print(iter)
+    if (iter %% 500 == 0) print(iter)
     if (iter > burn) {
       Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
-      Sigma.g = riwish(1 + p2, gammas %*% t(gammas) + p2 * diag(p2))
     }
-    #CAR model
-    lambda = lambda.gibbs.sampling(S, A, W, V)
-    W = W.slice.sampling(S, A, lambda, Y, X, W, betas, delta, C, rho, w[1], m, form = form)
-    V = V.slice.sampling(S, A, lambda, Y, eXB, Z, V, gammas, C, rho, w[2], m, form = form)
     betas = betas.slice.sampling(Sigma.b, Y, X, W, betas, delta, C, rho, w[1], m, form = form)
     eXB = exp(X %*% betas + W)
-    gammas = gammas.slice.sampling(Sigma.g, Y, eXB, Z, V, gammas, C, rho, w[2], m, form = form)
-    delta = 1 / (1 + exp(- Z %*% gammas - V))
     if (form %in% "Weibull") {
       rho = rho.slice.sampling(Y, eXB, delta, C, rho, w[3], m)
     } 
     if (iter > burn & (iter - burn) %% thin == 0) {
       betas.samp[(iter - burn) / thin, ] = betas
-      gammas.samp[(iter - burn) / thin, ] = gammas
       rho.samp[(iter - burn) / thin] = rho
-      lambda.samp[(iter - burn) / thin] = lambda
-      W.samp[(iter - burn) / thin] = W
-      V.samp[(iter - burn) / thin] = V
     }
   }
-  return(list(betas = betas.samp, gammas = gammas.samp, rho = rho.samp, lambda.samp = lambda.samp, W = W.samp, V = V.samp))
+  return(list(betas = betas.samp, rho = rho.samp))
 }
 
 
@@ -789,7 +781,7 @@ mcmcCure <- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
   gammas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p2)
   rho.samp = rep(NA, (N - burn) / thin)
   for (iter in 1:N) {
-    if (iter %% 1000 == 0) print(iter)
+    if (iter %% 500 == 0) print(iter)
     if (iter > burn) {
       Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
       Sigma.g = riwish(1 + p2, gammas %*% t(gammas) + p2 * diag(p2))
@@ -811,12 +803,15 @@ mcmcCure <- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
 }
 
 
-#' @title mcmcSurv
-#' @description Markov Chain Monte Carlo (MCMC) to run Bayesian survival (Weibull) model
+#' @title mcmcSpatialCure
+#' @description Markov Chain Monte Carlo (MCMC) to run Bayesian spatial cure model
 #'
 #' @param Y response variable
 #' @param C censoring indicator
 #' @param X covariates for betas
+#' @param Z covariates for gammas
+#' @param S spatial information (e.g. district)
+#' @param A adjacency information corresponding to spatial information
 #' @param N number of MCMC iterations
 #' @param burn burn-in to be discarded
 #' @param thin thinning to prevent from autocorrelation
@@ -827,30 +822,54 @@ mcmcCure <- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
 #' @return chain of the variables of interest
 #'
 #' @export
-mcmcSurv <- function(Y, C, X, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
+mcmcSpatialCure <- function(Y, C, X, Z, S, A, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
   p1 = dim(X)[2]
+  p2 = dim(Z)[2]
   # initial values
   betas = rep(0, p1)
+  gammas = rep(0, p2)
   rho = 1
+  lambda = 1
   W = rep(0, length(Y))
-  delta = rep(1, length(Y))
+  V = rep(0, length(Y))
+  delta = 1 / (1 + exp(- Z %*% gammas - V))
   Sigma.b = 10 * p1 * diag(p1)
+  Sigma.g = 10 * p2 * diag(p2)
   betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)
+  gammas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p2)
   rho.samp = rep(NA, (N - burn) / thin)
+  lambda.samp = rep(NA, (N - burn) / thin)
+  W.samp = matrix(NA, nrow = (N - burn) / thin, ncol = nrow(A))
+  V.samp = matrix(NA, nrow = (N - burn) / thin, ncol = nrow(A))
   for (iter in 1:N) {
-    if (iter %% 1000 == 0) print(iter)
+    if (iter %% 500 == 0) print(iter)
     if (iter > burn) {
       Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
+      Sigma.g = riwish(1 + p2, gammas %*% t(gammas) + p2 * diag(p2))
     }
+    #CAR model
+    lambda = lambda.gibbs.sampling(S, A, W, V)
+    W = W.slice.sampling(S, A, lambda, Y, X, W, betas, delta, C, rho, w[1], m, form = form)
     betas = betas.slice.sampling(Sigma.b, Y, X, W, betas, delta, C, rho, w[1], m, form = form)
     eXB = exp(X %*% betas + W)
+    V = V.slice.sampling(S, A, lambda, Y, eXB, Z, V, gammas, C, rho, w[2], m, form = form)
+    gammas = gammas.slice.sampling(Sigma.g, Y, eXB, Z, V, gammas, C, rho, w[2], m, form = form)
+    delta = 1 / (1 + exp(- Z %*% gammas - V))
+    
     if (form %in% "Weibull") {
       rho = rho.slice.sampling(Y, eXB, delta, C, rho, w[3], m)
     } 
     if (iter > burn & (iter - burn) %% thin == 0) {
       betas.samp[(iter - burn) / thin, ] = betas
+      gammas.samp[(iter - burn) / thin, ] = gammas
       rho.samp[(iter - burn) / thin] = rho
+      lambda.samp[(iter - burn) / thin] = lambda
+      S_uniq = unique(cbind(S, W, V))
+      S_uniq = S_uniq[order(S_uniq[,1]),]
+      W.samp[(iter - burn) / thin, ] = S_uniq[,2]
+      V.samp[(iter - burn) / thin, ] = S_uniq[,3]
     }
   }
-  return(list(betas = betas.samp, rho = rho.samp))
+  return(list(betas = betas.samp, gammas = gammas.samp, rho = rho.samp, lambda.samp = lambda.samp, W = W.samp, V = V.samp))
 }
+

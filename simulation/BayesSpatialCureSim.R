@@ -41,7 +41,7 @@ set.seed(3)
 n<-1000
 
 #set the number of simulations, and create matrices to store the results
-nsims<-1
+nsims<-100
 
 #history matrix for true estimates
 tru.est<-matrix(NA,nrow=nsims,ncol=8)
@@ -74,7 +74,8 @@ winit = rnorm(5)
 vinit = rnorm(5)
 w <- vapply(1:5, function(i){rnorm(1, mean(winit[which(a[i,]==1)]), sqrt(1/(1*rowSums(a)[i])))}, c(1))
 v <- vapply(1:5, function(i){rnorm(1, mean(vinit[which(a[i,]==1)]), sqrt(1/(1*rowSums(a)[i])))}, c(1))
-
+#w <- rep(0, 5)
+#v <- rep(0, 5)
 #create a dependent variable, begin the simmulations
 for(i in 1:nsims){
 
@@ -119,7 +120,7 @@ data<-cbind(ycen,di,x,z, s)
 Y<-ycen
 C<-di
 X<-cbind(1,x)
-Exponential <- mcmcSurv(Y, C, X, 550, 50, 1, form = "Exponential")
+Exponential <- mcmcSurv(Y, C, X, 330, 30, 1, form = "Exponential")
 output.Exponential = summary(mcmc(Exponential$betas))
 
 #store betas and ses
@@ -150,7 +151,7 @@ exp.cp[i,2]<-ifelse(tru.est[i,2]>b1.lower & tru.est[i,2]<b1.upper, 1,0)
 Y<-ycen
 C<-di
 X<-cbind(1,x)
-Weibull <- mcmcSurv(Y, C, X, 550, 50, 1, form = "Weibull")
+Weibull <- mcmcSurv(Y, C, X, 330, 30, 1, form = "Weibull")
 output.Weibull = summary(mcmc(Weibull$betas))
 output.Weibull2 = summary(mcmc(Weibull$rho))
 
@@ -188,7 +189,7 @@ C<-di
 X<-cbind(1,x)
 Z<-cbind(1,z,x)
 
-CExponential <- mcmcCure(Y, C, X, Z, 550, 50, 1, form = "Exponential")
+CExponential <- mcmcCure(Y, C, X, Z, 330, 30, 1, form = "Exponential")
 output.CExponential = summary(mcmc(CExponential$betas))
 output.CExponential2 = summary(mcmc(CExponential$gammas))
 
@@ -239,7 +240,7 @@ C<-di
 X<-cbind(1,x)
 Z<-cbind(1,z,x)
 
-CWeibull <- mcmcCure(Y, C, X, Z, 550, 50, 1, form = "Weibull")
+CWeibull <- mcmcCure(Y, C, X, Z, 330, 30, 1, form = "Weibull")
 output.CWeibull = summary(mcmc(CWeibull$betas))
 output.CWeibull2 = summary(mcmc(CWeibull$gammas))
 output.CWeibull3 = summary(mcmc(CWeibull$rho))
@@ -299,7 +300,7 @@ Z<-cbind(1,z,x)
 S<-s
 A<-a
 
-SCExponential <- mcmcSpatialCure(Y, C, X, Z, S, A, 550, 50, 1, form = "Exponential")
+SCExponential <- mcmcSpatialCure(Y, C, X, Z, S, A, 1100, 100, 2, form = "Exponential")
 output.SCExponential = summary(mcmc(SCExponential$betas))
 output.SCExponential2 = summary(mcmc(SCExponential$gammas))
 output.SCExponential3 = summary(mcmc(SCExponential$W))
@@ -415,7 +416,7 @@ exp.cp[i,19]<-ifelse(tru.est2[i,7]>v2.lower & tru.est2[i,7]<v2.upper, 1,0)
 exp.cp[i,20]<-ifelse(tru.est2[i,8]>v3.lower & tru.est2[i,8]<v3.upper, 1,0)
 exp.cp[i,21]<-ifelse(tru.est2[i,9]>v4.lower & tru.est2[i,9]<v4.upper, 1,0)
 exp.cp[i,22]<-ifelse(tru.est2[i,10]>v5.lower & tru.est2[i,10]<v5.upper, 1,0)
-exp.cp[i,22]<-ifelse(tru.est2[i,11]>l1.lower & tru.est2[i,11]<l1.upper, 1,0)
+exp.cp[i,23]<-ifelse(tru.est2[i,11]>l1.lower & tru.est2[i,11]<l1.upper, 1,0)
 
 
 #####################################################################################
@@ -428,7 +429,7 @@ Z<-cbind(1,z,x)
 S<-s
 A<-a
 
-SCWeibull <- mcmcSpatialCure(Y, C, X, Z, S, A, 550, 50, 1, form = "Weibull")
+SCWeibull <- mcmcSpatialCure(Y, C, X, Z, S, A, 1100, 100, 2, form = "Weibull")
 output.SCWeibull = summary(mcmc(SCWeibull$betas))
 output.SCWeibull2 = summary(mcmc(SCWeibull$gammas))
 output.SCWeibull3 = summary(mcmc(SCWeibull$rho))
@@ -584,7 +585,7 @@ colnames(main.data)<-c("true.x0","true.x1","true.z0","true.z1","true.z2","true.p
 	"scwei.x0.cp","scwei.x1.cp","scwei.z0.cp","scwei.z1.cp","scwei.z2.cp","scwei.p.cp",
 	"scwei.w1.cp","scwei.w2.cp","scwei.w3.cp","scwei.w4.cp","scwei.w5.cp",
 	"scwei.v1.cp","scwei.v2.cp","scwei.v3.cp","scwei.v4.cp","scwei.v5.cp",
-	"scwei.l.cp",
+	"scwei.l.cp"
 	)
 
 #save dataset

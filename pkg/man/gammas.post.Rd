@@ -4,7 +4,7 @@
 \alias{gammas.post}
 \title{gammas.post}
 \usage{
-gammas.post(gammas.p, p, Sigma.g, Y, eXB, Z, V, gammas, C, rho, form)
+gammas.post(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, rho, form)
 }
 \arguments{
 \item{gammas.p}{current value of the pth element of gammas}
@@ -18,8 +18,6 @@ gammas.post(gammas.p, p, Sigma.g, Y, eXB, Z, V, gammas, C, rho, form)
 \item{eXB}{exponentiated vector of covariates times betas}
 
 \item{Z}{covariates for gammas}
-
-\item{V}{spatial random effects}
 
 \item{gammas}{current value of gammas}
 

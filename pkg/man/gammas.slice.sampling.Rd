@@ -4,7 +4,7 @@
 \alias{gammas.slice.sampling}
 \title{gammas.slice.sampling}
 \usage{
-gammas.slice.sampling(Sigma.g, Y, eXB, Z, V, gammas, C, rho, w, m, form)
+gammas.slice.sampling(Sigma.g, Y, eXB, Z, gammas, C, rho, w, m, form)
 }
 \arguments{
 \item{Sigma.g}{variance estimate of gammas}
@@ -14,8 +14,6 @@ gammas.slice.sampling(Sigma.g, Y, eXB, Z, V, gammas, C, rho, w, m, form)
 \item{eXB}{exponentiated vector of covariates times betas}
 
 \item{Z}{covariates for gammas}
-
-\item{V}{spatial random effects}
 
 \item{gammas}{current value of gammas}
 

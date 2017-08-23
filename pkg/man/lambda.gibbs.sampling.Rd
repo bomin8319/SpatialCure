@@ -4,7 +4,7 @@
 \alias{lambda.gibbs.sampling}
 \title{lambda.gibbs.sampling}
 \usage{
-lambda.gibbs.sampling(S, A, W, V, a = 1, b = 1)
+lambda.gibbs.sampling(S, A, W, a = 1, b = 1)
 }
 \arguments{
 \item{S}{spatial information (e.g. district)}
@@ -12,8 +12,6 @@ lambda.gibbs.sampling(S, A, W, V, a = 1, b = 1)
 \item{A}{adjacency information corresponding to spatial information}
 
 \item{W}{spatial random effects}
-
-\item{V}{spatial random effects}
 
 \item{a}{shape parameter of gammas prior}
 

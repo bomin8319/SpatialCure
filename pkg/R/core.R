@@ -6,7 +6,7 @@
 #' @importFrom Rcpp sourceCpp
 #' @importFrom MCMCpack riwish
 #' @importFrom coda mcmc
-#' @importFrom mvtnorm rmvnorm dmvnorm
+#' @importFrom FastGP rcpp_rmvnorm rcpp_log_dmvnorm
 NULL
 
 
@@ -326,6 +326,7 @@ W.slice.sampling = function(S, A, lambda, Y, X, W, betas, delta, C, rho, w, m, f
   for (s in sample(1:nrow(A), nrow(A), replace = FALSE)) {
     W_uniq[s] = univ.W.slice.sampling(W_uniq[s], s, S, A, lambda, Y, X, W, betas, delta, C, rho, w, m, form = form)
   }
+  W_uniq = W_uniq - mean(W_uniq)
   W = W_uniq[S]
   return(W)
 }
@@ -435,7 +436,7 @@ univ.W.slice.sampling = function(W.s, s, S, A, lambda, Y, X, W, betas, delta, C,
 betas.post = function(betas.p, p, Sigma.b, Y, X, W, betas, delta, C, rho, form) {
   betas[p] = betas.p
   eXB = exp(X %*% betas + W)
-  lprior = dmvnorm(betas, rep(0, length(betas)), Sigma.b, log = TRUE)
+  lprior = rcpp_log_dmvnorm(Sigma.b, rep(0, length(betas)), betas, FALSE)
   lpost = llikWeibull(Y, eXB, delta, C, rho) + lprior
   return(lpost)
 }
@@ -460,7 +461,7 @@ betas.post = function(betas.p, p, Sigma.b, Y, X, W, betas, delta, C, rho, form) 
 gammas.post = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, rho, form) {
   gammas[p] = gammas.p
   delta = 1 / (1 + exp(-Z %*% gammas))
-  lprior = dmvnorm(gammas, rep(0, length(gammas)), Sigma.g, log = TRUE)
+  lprior = rcpp_log_dmvnorm(Sigma.g, rep(0, length(gammas)), gammas, FALSE)
   lpost = llikWeibull(Y, eXB, delta, C, rho) + lprior
   return(lpost)
 }
@@ -714,4 +715,142 @@ mcmcSpatialCure <- function(Y, C, X, Z, S, A, N, burn, thin, w = c(1, 1, 1), m =
   }
   return(list(betas = betas.samp, gammas = gammas.samp, rho = rho.samp, lambda = lambda.samp, W = W.samp))
 }
+
+
+#' @title W.post2
+#' @description log-posterior distribution of W with sth element fixed as W.s
+#'
+#' @param S spatial information (e.g. district)
+#' @param A adjacency information corresponding to spatial information
+#' @param lambda CAR parameter 
+#' @param Y response variable
+#' @param X covariates for betas
+#' @param W spatial random effects
+#' @param betas current value of betas
+#' @param delta probability of true censoring
+#' @param C censoring indicator
+#' @param rho current value of rho
+#'
+#' @return log- posterior density of betas
+#'
+#' @export
+W.post2 = function(S, A, lambda, Y, X, W, betas, delta, C, rho) {
+  eXB = exp(X %*% betas + W)
+  S_uniq = unique(cbind(S, W))
+  S_uniq = S_uniq[order(S_uniq[,1]),]
+  lprior = 0
+  for (s in 1:nrow(A)) {
+  adj = which(A[s,] == 1)
+  m_j = length(adj)
+  W_j_bar = mean(S_uniq[which(S_uniq[,1] %in% adj),2])
+  lprior = lprior + dnorm(S_uniq[s, 2], W_j_bar, sqrt(1/(lambda * m_j)), log = TRUE)
+  }
+  lpost = llikWeibull(Y, eXB, delta, C, rho) + lprior
+  return(lpost)
+}
+
+#' @title W.MH.sampling
+#' @description slice sampling for W
+#'
+#' @param S spatial information (e.g. district)
+#' @param A adjacency information corresponding to spatial information
+#' @param lambda CAR parameter 
+#' @param Y response variable
+#' @param X covariates for betas
+#' @param W spatial random effects
+#' @param betas current value of betas
+#' @param delta probability of true censoring
+#' @param C censoring indicator
+#' @param rho current value of rho
+#' @param w size of the slice in the slice sampling
+#' @param m limit on steps in the slice sampling
+#' @param prop.var proposal variance for Metropolis-Hastings
+#'
+#' @return One sample update using slice sampling
+#'
+#' @export
+W.MH.sampling = function(S, A, lambda, Y, X, W, betas, delta, C, rho, w, m, prop.var) {
+  S_uniq = unique(cbind(S, W))
+  W_old = S_uniq[order(S_uniq[,1]), 2]
+  W_new = rcpp_rmvnorm(1, prop.var * diag(length(W_old)), W_old)
+  W_new = W_new - mean(W_new)
+  u = log(runif(1))
+  temp = W.post2(S, A, lambda, Y, X, W_new[S], betas, delta, C, rho) -
+  		 W.post2(S, A, lambda, Y, X, W_old[S], betas, delta, C, rho)
+  alpha = min(0, temp)
+  if (u <= alpha) {
+  	W = W_new[S]
+  } else {
+  	W = W_old[S]
+  }
+  return(W)
+}
+
+#' @title mcmcSpatialCure2
+#' @description Markov Chain Monte Carlo (MCMC) to run Bayesian spatial cure model
+#'
+#' @param Y response variable
+#' @param C censoring indicator
+#' @param X covariates for betas
+#' @param Z covariates for gammas
+#' @param S spatial information (e.g. district)
+#' @param A adjacency information corresponding to spatial information
+#' @param N number of MCMC iterations
+#' @param burn burn-in to be discarded
+#' @param thin thinning to prevent from autocorrelation
+#' @param w size of the slice in the slice sampling for (betas, gammas, rho)
+#' @param m limit on steps in the slice sampling
+#' @param form type of parametric model (Exponential or Weibull)
+#' @param prop.var proposal variance for Metropolis-Hastings
+#'
+#' @return chain of the variables of interest
+#'
+#' @export
+mcmcSpatialCure2 <- function(Y, C, X, Z, S, A, N, burn, thin, w = c(1, 1, 1), m = 10, form, prop.var) {
+  p1 = dim(X)[2]
+  p2 = dim(Z)[2]
+  # initial values
+  betas = rep(0, p1)
+  gammas = rep(0, p2)
+  rho = 1
+  lambda = 1
+  W = rep(0, length(Y))
+  delta = 1 / (1 + exp(- Z %*% gammas))
+  Sigma.b = 10 * p1 * diag(p1)
+  Sigma.g = 10 * p2 * diag(p2)
+  betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)
+  gammas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p2)
+  rho.samp = rep(NA, (N - burn) / thin)
+  lambda.samp = rep(NA, (N - burn) / thin)
+  W.samp = matrix(NA, nrow = (N - burn) / thin, ncol = nrow(A))
+  for (iter in 1:N) {
+    if (iter %% 500 == 0) print(iter)
+    if (iter > burn) {
+      Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
+      Sigma.g = riwish(1 + p2, gammas %*% t(gammas) + p2 * diag(p2))
+    }
+    #CAR model
+    lambda = lambda.gibbs.sampling(S, A, W)
+    W = W.MH.sampling(S, A, lambda, Y, X, W, betas, delta, C, rho, w[1], m, prop.var)
+    betas = betas.slice.sampling(Sigma.b, Y, X, W, betas, delta, C, rho, w[1], m, form = form)
+    eXB = exp(X %*% betas + W)
+    gammas = gammas.slice.sampling(Sigma.g, Y, eXB, Z, gammas, C, rho, w[2], m, form = form)
+    delta = 1 / (1 + exp(- Z %*% gammas))
+    
+    if (form %in% "Weibull") {
+      rho = rho.slice.sampling(Y, eXB, delta, C, rho, w[3], m)
+    } 
+    if (iter > burn & (iter - burn) %% thin == 0) {
+      betas.samp[(iter - burn) / thin, ] = betas
+      gammas.samp[(iter - burn) / thin, ] = gammas
+      rho.samp[(iter - burn) / thin] = rho
+      lambda.samp[(iter - burn) / thin] = lambda
+      S_uniq = unique(cbind(S, W))
+      S_uniq = S_uniq[order(S_uniq[,1]),]
+      W.samp[(iter - burn) / thin, ] = S_uniq[,2]
+    }
+  }
+  return(list(betas = betas.samp, gammas = gammas.samp, rho = rho.samp, lambda = lambda.samp, W = W.samp))
+}
+
 

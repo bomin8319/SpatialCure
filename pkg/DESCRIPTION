@@ -10,7 +10,7 @@ Encoding: UTF-8
 LazyData: true
 Imports:
 	MCMCpack,
-	mvtnorm,
+	FastGP,
 	stats,
 	Rcpp,
 	RcppArmadillo,

@@ -23,7 +23,6 @@
   library(msm)
   library(verification)
   library(corpcor)
-  library(Design)
   library(SpatialCure)
   library(MCMCpack)
   #set working directory
@@ -41,7 +40,7 @@
   n<-1000
   
   #set the number of simulations, and create matrices to store the results
-  nsims<-1
+  nsims<-1000
   
   #history matrix for true estimates
   tru.est<-matrix(NA,nrow=nsims,ncol=8)

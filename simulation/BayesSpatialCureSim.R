@@ -35,7 +35,7 @@
   ##########################################################################
   
   #set seed
-  set.seed(3)   
+  set.seed(123)   
   
   #set the number of observations
   n<-1000
@@ -70,9 +70,8 @@
   a[2,3]=a[3,2] = 1 
   a[5,3]=a[3,5] = 1 
   a[1,4]=a[4,1] = 1 
-  winit = rnorm(5)
-  w <- winit
-  #w <- vapply(1:5, function(i){rnorm(1, mean(winit[which(a[i,]==1)]), sqrt(1/(1*rowSums(a)[i])))}, c(1))
+  w <- rep(0,5)
+  w <- vapply(1:5, function(i){rnorm(1, mean(w[which(a[i,]==1)]), sqrt(1/(1*rowSums(a)[i])))}, c(1))
 
   #create a dependent variable, begin the simmulations
   for(i in 1:nsims){
@@ -80,12 +79,12 @@
   #Assign parameter values
   tru.est[i,1]<-0
   tru.est[i,2]<-3.5
-  tru.est[i,3]<-0
+  tru.est[i,3]<--2
   tru.est[i,4]<--2
   tru.est[i,5]<-3
   tru.est[i,6]<-1
   
-  tru.est2[i,1:5]<-w
+  tru.est2[i,1:5] <- w
   tru.est2[i,6]<-1   #lambda
   
   W <- w[s]
@@ -115,9 +114,9 @@
   #############################################################################
   Y<-ycen
   C<-di
-  #X<-cbind(1,x)
-  X <- matrix(x, ncol = 1)
-  Exponential <- mcmcSurv(Y, C, X, 330, 30, 1, form = "Exponential")
+  X<-cbind(1,x)
+  #X <- matrix(x, ncol = 1)
+  Exponential <- mcmcSurv(Y, C, X, 550, 50, 1, form = "Exponential")
   output.Exponential = summary(mcmc(Exponential$betas))
   
   #store betas and ses
@@ -147,9 +146,9 @@
   ################################################################################
   Y<-ycen
   C<-di
-  #X<-cbind(1,x)
-  X <- matrix(x, ncol = 1)
-  Weibull <- mcmcSurv(Y, C, X, 330, 30, 1, form = "Weibull")
+  X<-cbind(1,x)
+  #X <- matrix(x, ncol = 1)
+  Weibull <- mcmcSurv(Y, C, X, 550, 30, 1, form = "Weibull")
   output.Weibull = summary(mcmc(Weibull$betas))
   output.Weibull2 = summary(mcmc(Weibull$rho))
   
@@ -184,11 +183,11 @@
   ###############################################################################
   Y<-ycen
   C<-di
-  #X<-cbind(1,x)
-  X <- matrix(x, ncol = 1)
+  X<-cbind(1,x)
+  #X <- matrix(x, ncol = 1)
   Z<-cbind(1,z,x)
   
-  CExponential <- mcmcCure(Y, C, X, Z, 330, 30, 1, form = "Exponential")
+  CExponential <- mcmcCure(Y, C, X, Z, 550, 50, 1, form = "Exponential")
   output.CExponential = summary(mcmc(CExponential$betas))
   output.CExponential2 = summary(mcmc(CExponential$gammas))
   
@@ -236,11 +235,11 @@
   #####################################################################################
   Y<-ycen
   C<-di
-  #X<-cbind(1,x)
-  X <- matrix(x, ncol = 1)
+  X<-cbind(1,x)
+  #X <- matrix(x, ncol = 1)
   Z<-cbind(1,z,x)
   
-  CWeibull <- mcmcCure(Y, C, X, Z, 330, 30, 1, form = "Weibull")
+  CWeibull <- mcmcCure(Y, C, X, Z, 550, 50, 1, form = "Weibull")
   output.CWeibull = summary(mcmc(CWeibull$betas))
   output.CWeibull2 = summary(mcmc(CWeibull$gammas))
   output.CWeibull3 = summary(mcmc(CWeibull$rho))
@@ -295,13 +294,13 @@
   ###############################################################################
   Y<-ycen
   C<-di
-  #X<-cbind(1,x)
-  X <- matrix(x, ncol = 1)
-  Z<-cbind(z,x)
+  X<-cbind(1,x)
+  #X <- matrix(x, ncol = 1)
+  Z<-cbind(1, z,x)
   S<-s
   A<-a
   
-  SCExponential <- mcmcSpatialCure(Y, C, X, Z, S, A, 550, 50, 1, form = "Exponential")
+  SCExponential <- mcmcSpatialCure(Y, C, X, Z, S, A, 5500, 500, 10, form = "Exponential")
   output.SCExponential = summary(mcmc(SCExponential$betas))
   output.SCExponential2 = summary(mcmc(SCExponential$gammas))
   output.SCExponential3 = summary(mcmc(SCExponential$W))
@@ -392,13 +391,13 @@
   #####################################################################################
   Y<-ycen
   C<-di
-  #X<-cbind(1,x)
-  X <- matrix(x, ncol = 1)
+  X<-cbind(1,x)
+  #X <- matrix(x, ncol = 1)
   Z<-cbind(1,z,x)
   S<-s
   A<-a
   
-  SCWeibull <- mcmcSpatialCure(Y, C, X, Z, S, A, 550, 50, 1, form = "Weibull")
+  SCWeibull <- mcmcSpatialCure(Y, C, X, Z, S, A, 5500, 500, 10, form = "Weibull")
   output.SCWeibull = summary(mcmc(SCWeibull$betas))
   output.SCWeibull2 = summary(mcmc(SCWeibull$gammas))
   output.SCWeibull3 = summary(mcmc(SCWeibull$rho))

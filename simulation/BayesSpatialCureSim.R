@@ -41,7 +41,7 @@
   n<-1000
   
   #set the number of simulations, and create matrices to store the results
-  nsims<-3
+  nsims<-1
   
   #history matrix for true estimates
   tru.est<-matrix(NA,nrow=nsims,ncol=8)
@@ -345,7 +345,7 @@
   exp.rmse[i,15]<-sqrt((tru.est2[i,3]-exp.est[i,29])^2)
   exp.rmse[i,16]<-sqrt((tru.est2[i,4]-exp.est[i,31])^2)
   exp.rmse[i,17]<-sqrt((tru.est2[i,5]-exp.est[i,33])^2)
-  exp.rmse[i,18]<-sqrt((tru.est2[i,6]-exp.est[i,45])^2)
+  exp.rmse[i,18]<-sqrt((tru.est2[i,6]-exp.est[i,35])^2)
   
   #calculate upper and lower 95% CI's
   b0.lower<-output.SCExponential[[2]][1,1]
@@ -369,8 +369,8 @@
   w4.upper<-output.SCExponential3[[2]][4,5]
   w5.lower<-output.SCExponential3[[2]][5,1]
   w5.upper<-output.SCExponential3[[2]][5,5]
-  l1.lower<-output.SCExponential5[[2]][1]
-  l1.upper<-output.SCExponential5[[2]][5]
+  l1.lower<-output.SCExponential4[[2]][1]
+  l1.upper<-output.SCExponential4[[2]][5]
   #store coverage parameters
   exp.cp[i,8]<-ifelse(tru.est[i,1]>b0.lower & tru.est[i,1]<b0.upper, 1,0)
   exp.cp[i,9]<-ifelse(tru.est[i,2]>b1.lower & tru.est[i,2]<b1.upper, 1,0)
@@ -444,7 +444,7 @@
   weib.rmse[i,18]<-sqrt((tru.est2[i,3]-weib.est[i,35])^2)
   weib.rmse[i,19]<-sqrt((tru.est2[i,4]-weib.est[i,37])^2)
   weib.rmse[i,20]<-sqrt((tru.est2[i,5]-weib.est[i,39])^2)
-  weib.rmse[i,21]<-sqrt((tru.est2[i,11]-weib.est[i,51])^2)
+  weib.rmse[i,21]<-sqrt((tru.est2[i,6]-weib.est[i,41])^2)
   
   #calculate upper and lower 95% CI's
   b0.lower<-output.SCWeibull[[2]][1,1]
@@ -490,35 +490,36 @@
   
   }
   #combine matrices and label variables
-  main.data<-cbind(tru.est,exp.est,weib.est,exp.rmse,weib.rmse,exp.cp,weib.cp)
-  colnames(main.data)<-c("true.x0","true.x1","true.z0","true.z1","true.z2","true.p","cen.lat","cen.obs",
-  	"exp.x0","exp.x0.se","exp.x1","exp.x1.se",
+  colnames(tru.est) = c("true.x0","true.x1","true.z0","true.z1","true.z2","true.p","cen.lat","cen.obs")
+  colnames(tru.est2) = c( "true.w1","true.w2","true.w3","true.w4","true.w5","true.lambda")
+  colnames(exp.est) = c("exp.x0","exp.x0.se","exp.x1","exp.x1.se",
   	"cexp.x0","cexp.x0.se","cexp.x1","cexp.x1.se","cexp.z0","cexp.z0.se","cexp.z1","cexp.z1.se","cexp.z2","cexp.z2.se",
   	"scexp.x0","scexp.x0.se","scexp.x1","scexp.x1.se","scexp.z0","scexp.z0.se","scexp.z1","scexp.z1.se","scexp.z2","scexp.z2.se",
   	"scexp.w1","scexp.w1.se","scexp.w2","scexp.w2.se","scexp.w3","scexp.w3.se","scexp.w4","scexp.w4.se","scexp.w5","scexp.w5.se",
-  	"scexp.l","scexp.l.se",
-  	"wei.x0","wei.x0.se","wei.x1","wei.x1.se","wei.p","wei.p.se",
+  	"scexp.l","scexp.l.se")
+  colnames(weib.est) = c("wei.x0","wei.x0.se","wei.x1","wei.x1.se","wei.p","wei.p.se",
   	"cwei.x0","cwei.x0.se","cwei.x1","cwei.x1.se","cwei.z0","cwei.z0.se","cwei.z1","cwei.z1.se","cwei.z2","cwei.z2.se","cwei.p","cwei.p.se",
   	"scwei.x0","scwei.x0.se","scwei.x1","scwei.x1.se","scwei.z0","scwei.z0.se","scwei.z1","scwei.z1.se","scwei.z2","scwei.z2.se","scwei.p","scwei.p.se",
   	"scwei.w1","scwei.w1.se","scwei.w2","scwei.w2.se","scwei.w3","scwei.w3.se","scwei.w4","scwei.w4.se","scwei.w5","scwei.w5.se",
-  	"scwei.l","scwei.l.se",
-  	"exp.x0.rmse","exp.x1.rmse","cexp.x0.rmse","cexp.x1.rmse","cexp.z0.rmse","cexp.z1.rmse","cexp.z2.rmse",
+  	"scwei.l","scwei.l.se")
+  	colnames(exp.rmse) = c("exp.x0.rmse","exp.x1.rmse","cexp.x0.rmse","cexp.x1.rmse","cexp.z0.rmse","cexp.z1.rmse","cexp.z2.rmse",
   	"scexp.x0.rmse","scexp.x1.rmse","scexp.z0.rmse","scexp.z1.rmse","scexp.z2.rmse",
   	"scexp.w1.rmse","scexp.w2.rmse","scexp.w3.rmse","scexp.w4.rmse","scexp.w5.rmse",
-  	"scexp.v1.rmse","scexp.v2.rmse","scexp.v3.rmse","scexp.v4.rmse","scexp.v5.rmse",
-  	"scexp.l.rmse",
-  	"wei.x0.rmse","wei.x1.rmse","wei.p.rmse","cwei.x0.rmse","cwei.x1.rmse","cwei.z0.rmse","cwei.z1.rmse","cwei.z2.rmse","cwei.p.rmse",
+  	"scexp.l.rmse")
+  	colnames(weib.rmse) = c("wei.x0.rmse","wei.x1.rmse","wei.p.rmse","cwei.x0.rmse","cwei.x1.rmse","cwei.z0.rmse","cwei.z1.rmse","cwei.z2.rmse","cwei.p.rmse",
   	"scwei.x0.rmse","scwei.x1.rmse","scwei.z0.rmse","scwei.z1.rmse","scwei.z2.rmse","scwei.p.rmse",
   	"scwei.w1.rmse","scwei.w2.rmse","scwei.w3.rmse","scwei.w4.rmse","scwei.w5.rmse",
-  	"scwei.l.rmse",	
-  	"exp.x0.cp","exp.x1.cp","cexp.x0.cp","cexp.x1.cp","cexp.z0.cp","cexp.z1.cp","cexp.z2.cp",
-  	"wei.x0.cp","wei.x1.cp","wei.p.cp", "cwei.x0.cp","cwei.x1.cp","cwei.z0.cp","cwei.z1.cp","cwei.z2.cp","cwei.p.cp",
+  	"scwei.l.rmse")
+  	colnames(exp.cp) = c("exp.x0.cp","exp.x1.cp","cexp.x0.cp","cexp.x1.cp","cexp.z0.cp","cexp.z1.cp","cexp.z2.cp",
+  	"scexp.x0.cp","scexp.x1.cp","scexp.z0.cp","scexp.z1.cp","scexp.z2.cp",
+  	"scexp.w1.cp","scexp.w2.cp","scexp.w3.cp","scexp.w4.cp","scexp.w5.cp", "scexp.l.cp")
+  	colnames(weib.cp) = c("wei.x0.cp","wei.x1.cp","wei.p.cp", "cwei.x0.cp","cwei.x1.cp","cwei.z0.cp","cwei.z1.cp","cwei.z2.cp","cwei.p.cp",
   	"scwei.x0.cp","scwei.x1.cp","scwei.z0.cp","scwei.z1.cp","scwei.z2.cp","scwei.p.cp",
   	"scwei.w1.cp","scwei.w2.cp","scwei.w3.cp","scwei.w4.cp","scwei.w5.cp",
-  	"scwei.l.cp"
-  	)
+  	"scwei.l.cp")
+  main.data<-cbind(tru.est, tru.est2, exp.est,weib.est,exp.rmse,weib.rmse,exp.cp,weib.cp)
   
-  #save dataset
+   #save dataset
   main.data<-as.data.frame(main.data)
   write.dta(main.data,"main.data.dta")
   

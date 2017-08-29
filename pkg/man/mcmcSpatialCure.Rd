@@ -5,7 +5,7 @@
 \title{mcmcSpatialCure}
 \usage{
 mcmcSpatialCure(Y, C, X, Z, S, A, N, burn, thin, w = c(1, 1, 1), m = 10,
-  form)
+  form, prop.var)
 }
 \arguments{
 \item{Y}{response variable}
@@ -31,6 +31,8 @@ mcmcSpatialCure(Y, C, X, Z, S, A, N, burn, thin, w = c(1, 1, 1), m = 10,
 \item{m}{limit on steps in the slice sampling}
 
 \item{form}{type of parametric model (Exponential or Weibull)}
+
+\item{prop.var}{proposal variance for Metropolis-Hastings}
 }
 \value{
 chain of the variables of interest

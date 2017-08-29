@@ -4,13 +4,9 @@
 \alias{W.post}
 \title{W.post}
 \usage{
-W.post(W.s, s, S, A, lambda, Y, X, W, betas, delta, C, rho, form)
+W.post(S, A, lambda, Y, X, W, betas, delta, C, rho)
 }
 \arguments{
-\item{W.s}{current value of the sth element of W}
-
-\item{s}{pth element}
-
 \item{S}{spatial information (e.g. district)}
 
 \item{A}{adjacency information corresponding to spatial information}
@@ -30,8 +26,6 @@ W.post(W.s, s, S, A, lambda, Y, X, W, betas, delta, C, rho, form)
 \item{C}{censoring indicator}
 
 \item{rho}{current value of rho}
-
-\item{form}{type of parametric model (Exponential or Weibull)}
 }
 \value{
 log- posterior density of betas

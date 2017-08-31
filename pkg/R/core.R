@@ -843,10 +843,10 @@ mcmcSpatialCure <- function(Y, C, X, Z, S, A, N, burn, thin, w = c(1, 1, 1), m =
     if (iter > burn) {
       Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
       Sigma.g = riwish(1 + p2, gammas %*% t(gammas) + p2 * diag(p2))
-      lambda = lambda.gibbs.sampling(S, A, W)
-      W = W.MH.sampling(S, A, lambda, Y, X, W, betas, delta, C, rho, prop.var)
     }
     #CAR model
+    lambda = lambda.gibbs.sampling(S, A, W)
+    W = W.MH.sampling(S, A, lambda, Y, X, W, betas, delta, C, rho, prop.var)
     betas = betas.slice.sampling(Sigma.b, Y, X, W, betas, delta, C, rho, w[1], m, form = form)
     eXB = exp(X %*% betas + W)
     gammas = gammas.slice.sampling(Sigma.g, Y, eXB, Z, gammas, C, rho, w[2], m, form = form)
@@ -912,14 +912,14 @@ mcmcSpatialCure2 <- function(Y, C, X, Z, S, A, N, burn, thin, w = c(1, 1, 1), m 
     if (iter > burn) {
       Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
       Sigma.g = riwish(1 + p2, gammas %*% t(gammas) + p2 * diag(p2))
-   	  lambda = lambda.gibbs.sampling2(S, A, W, V)
-      W = W.MH.sampling(S, A, lambda, Y, X, W, betas, delta, C, rho, prop.var)
-      V = V.MH.sampling(S, A, lambda, Y, eXB, Z, V, gammas, C, rho, prop.var)
     }
     #CAR model
+    lambda = lambda.gibbs.sampling2(S, A, W, V)
+    W = W.MH.sampling(S, A, lambda, Y, X, W, betas, delta, C, rho, prop.var)
     betas = betas.slice.sampling(Sigma.b, Y, X, W, betas, delta, C, rho, w[1], m, form = form)
     eXB = exp(X %*% betas + W)
-    gammas = gammas.slice.sampling2(Sigma.g, Y, eXB, Z, V, gammas, C, rho, w[2], m, form = form)
+    V = V.MH.sampling(S, A, lambda, Y, eXB, Z, V, gammas, C, rho, prop.var)
+ 	gammas = gammas.slice.sampling2(Sigma.g, Y, eXB, Z, V, gammas, C, rho, w[2], m, form = form)
     delta = 1 / (1 + exp(- Z %*% gammas - V))
     
     if (form %in% "Weibull") {

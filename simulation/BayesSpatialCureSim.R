@@ -299,7 +299,7 @@
   S<-s
   A<-a
   
-  SCExponential <- mcmcSpatialCure2(Y, C, X, Z, S, A, 3000, 500, 5, form = "Exponential", prop.var = 0.05)
+  SCExponential <- mcmcSpatialCure(Y, C, X, Z, S, A, 3000, 500, 5, form = "Exponential", prop.var = 0.05)
   output.SCExponential = summary(mcmc(SCExponential$betas))
   output.SCExponential2 = summary(mcmc(SCExponential$gammas))
   output.SCExponential3 = summary(mcmc(SCExponential$W))
@@ -396,7 +396,7 @@
   S<-s
   A<-a
   
-  SCWeibull <- mcmcSpatialCure2(Y, C, X, Z, S, A, 3000, 500, 5, form = "Weibull", prop.var = 0.05)
+  SCWeibull <- mcmcSpatialCure(Y, C, X, Z, S, A, 3000, 500, 5, form = "Weibull", prop.var = 0.05)
   output.SCWeibull = summary(mcmc(SCWeibull$betas))
   output.SCWeibull2 = summary(mcmc(SCWeibull$gammas))
   output.SCWeibull3 = summary(mcmc(SCWeibull$rho))

@@ -27,7 +27,7 @@ library(corpcor)
 library(Zelig)
 
 
-Results<-read.dta("/Users/bomin8319/Desktop/main.data.dta")
+Results<-read.dta("/Users/bomin8319/Desktop/SpatialCure/simulation/main.data.dta")
 Results<-as.matrix(Results, )
 resize.win <- function(Width=6, Height=6)
 {

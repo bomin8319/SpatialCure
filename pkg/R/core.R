@@ -530,7 +530,7 @@ lambda.gibbs.sampling <- function(S, A, W, a = 1, b = 1) {
     W_j = S_uniq[j, 2]
     sums = sums + m_j/2 * (W_j-W_j_bar)^2
   }
-  lambda = rgamma(1, J + a, sums + b)
+  lambda = rgamma(1, J / 2 + a, sums + b)
   return(lambda)
 }
 
@@ -723,7 +723,7 @@ mcmcSurv <- function(Y, C, X, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
   betas = rep(0, p1)
   rho = 1
   W = rep(0, length(Y))
-  delta = rep(1, length(Y))
+  delta = rep(0, length(Y))
   Sigma.b = 10 * p1 * diag(p1)
   betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)
   rho.samp = rep(NA, (N - burn) / thin)
@@ -737,7 +737,7 @@ mcmcSurv <- function(Y, C, X, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
     if (form %in% "Weibull") {
       rho = rho.slice.sampling(Y, eXB, delta, C, rho, w[3], m)
     } 
-    if (iter > burn & (iter - burn) %% thin == 0) {
+    if (iter > burn && (iter - burn) %% thin == 0) {
       betas.samp[(iter - burn) / thin, ] = betas
       rho.samp[(iter - burn) / thin] = rho
     }
@@ -791,7 +791,7 @@ mcmcCure <- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
     if (form %in% "Weibull") {
       rho = rho.slice.sampling(Y, eXB, delta, C, rho, w[3], m)
     } 
-    if (iter > burn & (iter - burn) %% thin == 0) {
+    if (iter > burn && (iter - burn) %% thin == 0) {
       betas.samp[(iter - burn) / thin, ] = betas
       gammas.samp[(iter - burn) / thin, ] = gammas
       rho.samp[(iter - burn) / thin] = rho
@@ -855,7 +855,7 @@ mcmcSpatialCure <- function(Y, C, X, Z, S, A, N, burn, thin, w = c(1, 1, 1), m =
     if (form %in% "Weibull") {
       rho = rho.slice.sampling(Y, eXB, delta, C, rho, w[3], m)
     } 
-    if (iter > burn & (iter - burn) %% thin == 0) {
+    if (iter > burn && (iter - burn) %% thin == 0) {
       betas.samp[(iter - burn) / thin, ] = betas
       gammas.samp[(iter - burn) / thin, ] = gammas
       rho.samp[(iter - burn) / thin] = rho
@@ -925,7 +925,7 @@ mcmcSpatialCure2 <- function(Y, C, X, Z, S, A, N, burn, thin, w = c(1, 1, 1), m 
     if (form %in% "Weibull") {
       rho = rho.slice.sampling(Y, eXB, delta, C, rho, w[3], m)
     } 
-    if (iter > burn & (iter - burn) %% thin == 0) {
+    if (iter > burn && (iter - burn) %% thin == 0) {
       betas.samp[(iter - burn) / thin, ] = betas
       gammas.samp[(iter - burn) / thin, ] = gammas
       rho.samp[(iter - burn) / thin] = rho

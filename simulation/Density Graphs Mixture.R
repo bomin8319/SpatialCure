@@ -27,7 +27,7 @@ library(corpcor)
 library(Zelig)
 
 
-Results<-read.dta("/Users/bomin8319/Desktop/SpatialCure/simulation/main.data.dta")
+Results<-read.dta("/Users/bomin8319/Desktop/SpatialCure/simulation/main.data_U.dta")
 Results<-as.matrix(Results, )
 resize.win <- function(Width=6, Height=6)
 {
@@ -71,7 +71,7 @@ par(new=FALSE)
 
 #B1
 local.xlim<-c(3,3.9)
-local.ylim<-c(0,6)
+local.ylim<-c(0,7.5)
 plot(density(Results[,17],na.rm=TRUE), main = "",  ylab = "", xlab = "", xlim=local.xlim, ylim=local.ylim,col="blue", xaxt='n', yaxt='n')
 abline(v=3.5,lty=3)
 par(new=TRUE)
@@ -108,7 +108,7 @@ par(new=FALSE)
 
 #B1
 local.ylim<-c(0,.5)
-local.xlim<-c(-5,2.5)
+local.xlim<-c(-5.5,3)
 plot(density(Results[,23],na.rm=TRUE), main = "",  ylab = "", xlab = "",xlim=local.xlim, ylim=local.ylim,col="red", xaxt='n', yaxt='n')
 abline(v=-2,lty=3)
 par(new=TRUE)
@@ -126,7 +126,7 @@ par(new=FALSE)
 
 #B1
 local.ylim<-c(0,1.2)
-local.xlim<-c(-3.5,-1.1)
+local.xlim<-c(-4,1)
 plot(density(Results[,25],na.rm=TRUE), main = "",  ylab = "", xlab = "",xlim=local.xlim, ylim=local.ylim,col="red", xaxt='n', yaxt='n')
 abline(v=-2,lty=3)
 par(new=TRUE)
@@ -143,7 +143,7 @@ par(new=FALSE)
 
 #B1
 local.ylim<-c(0,1.1)
-local.xlim<-c(1.2,4.5)
+local.xlim<-c(1,5)
 plot(density(Results[,27],na.rm=TRUE), main = "",  ylab = "", xlab = "",xlim=local.xlim, ylim=local.ylim,col="red", xaxt='n', yaxt='n')
 abline(v=3,lty=3)
 par(new=TRUE)
